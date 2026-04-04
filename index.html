@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Controle Financeiro</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #008080 0%, #4a90e2 100%);
+            color: #333;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        .navbar {
+            background-color: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 0;
+            width: 100%;
+            position: fixed;
+            top: 0;
+            z-index: 1000;
+        }
+        .navbar-nav .nav-link {
+            color: #008080 !important;
+            font-weight: 500;
+            padding: 15px 20px;
+            transition: all 0.3s ease;
+            border-bottom: 2px solid transparent;
+        }
+        .navbar-nav .nav-link:hover,
+        .navbar-nav .nav-link.active {
+            color: #4a90e2 !important;
+            background-color: rgba(74, 144, 226, 0.1);
+            border-bottom-color: #4a90e2;
+        }
+        .menu-icon {
+            margin-right: 8px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 80px auto 20px;
+            padding: 20px;
+            background-color: white;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            border-radius: 8px;
+        }
+        h2 {
+            text-align: center;
+            color: #008080;
+        }
+        .summary {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+            justify-content: center;
+        }
+        .summary label {
+            display: flex;
+            flex-direction: column;
+            font-weight: bold;
+        }
+        .summary input {
+            padding: 5px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .buttons {
+            text-align: center;
+            margin: 20px 0;
+        }
+        .table-container {
+            overflow-x: auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+        input, select {
+            width: 100%;
+            padding: 4px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 2px;
+        }
+        .valorTotal {
+            font-weight: bold;
+        }
+        .pago:checked + input {
+            color: green !important;
+        }
+        footer {
+            margin-top: auto;
+            padding: 20px;
+            text-align: center;
+            color: rgba(255,255,255,0.8);
+            width: 100%;
+            background-color: rgba(0,0,0,0.2);
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg">
+        <div class="container-fluid">
+            <a class="navbar-brand fw-bold text-primary" href="index2.html" style="font-size: 1.5rem; color: #008080 !important;">
+                <i class="fas fa-chart-line menu-icon"></i>Controle Financeiro
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index2.html">
+                            <i class="fas fa-home menu-icon"></i>Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="dados_salvos.html">
+                            <i class="fas fa-database menu-icon"></i>Dados Salvos
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="contact.html">
+                            <i class="fas fa-envelope menu-icon"></i>Contato
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">
+                            <i class="fas fa-link menu-icon"></i>Controle
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">      
+        <h2>Controle Financeiro</h2>
+
+        <div class="summary">
+            <label>Valor Salarial: <input type="text" id="valorSalarial" value="0.00" oninput="updateSummary()"></label>
+            <label>Total Pago: <input type="text" id="totalPago" value="0.00" readonly></label>
+            <label>Total Não Pago: <input type="text" id="totalNaoPago" value="0.00" readonly></label>
+        </div>
+
+        <div class="buttons">
+            <button class="btn btn-primary" onclick="importExcel()"><i class="fas fa-upload"></i> <span>Importar Excel</span></button>
+            <button class="btn btn-primary" onclick="exportToExcel()"><i class="fas fa-download"></i> <span>Exportar Excel</span></button>
+            <button class="btn btn-primary" onclick="saveData()"><i class="fas fa-save"></i> <span>Salvar Dados</span></button>
+            <button class="btn btn-primary" id="addRowButton"><i class="fas fa-plus-circle"></i> Adicionar Linha</button>
+        </div>
+
+        <div class="table-container">
+            <table id="dataTable" class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Contas</th>
+                        <th>Horário</th>
+                        <th>Data</th>
+                        <th>Vencimento</th>
+                        <th>Aumento</th>
+                        <th>Banco</th>
+                        <th>Valor</th>
+                        <th>Acréscimo</th>
+                        <th class="valorTotal">Valor Total</th>
+                        <th>Pago</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><input type="text" class="conta form-control" value="" oninput="calculateTotal(this)"></td>
+                        <td><input type="text" class="horario form-control" readonly onclick="displayCurrentTime(this)"></td>
+                        <td><input type="text" class="data datepicker form-control" readonly onclick="displayCurrentDate(this)"></td>
+                        <td><input type="text" class="vencimento datepicker form-control" value="" oninput="calculateTotal(this)"></td>
+                        <td>
+                            <select class="aumento form-select" onchange="calculateTotal(this)">
+                                <option value="0.025">0.025%</option>
+                                <option value="0.5">0.5%</option>
+                                <option value="1">1%</option>
+                                <option value="2">2%</option>
+                                <option value="3">3%</option>
+                                <option value="4">0.7%</option>
+                                <option value="5">0.8%</option>
+                                <option value="0" selected>0%</option>
+                            </select>
+                        </td>
+                        <td>
+                            <select class="prazo form-select" onchange="calculateTotal(this)">
+                                <option value="BB">BB</option>
+                                <option value="Bradesco">Bradesco</option>
+                                <option value="PAN">PAN</option>
+                                <option value="CAIXA">Caixa</option>
+                                <option value="Inter">Inter</option>
+                                <option value="Bradesco" selected>Bradesco</option>
+                            </select>
+                        </td>
+                        <td><input type="text" class="valor form-control" value="0.00" oninput="calculateTotal(this)"></td>
+                        <td><input type="text" class="valorAcrescimo form-control" value="0.00" readonly></td>
+                        <td><input type="text" class="valorTotal form-control" value="0.00" readonly></td>
+                        <td><input type="checkbox" class="pago" onclick="calculateTotal(this)"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2025 Controle Financeiro. "gilmar chagas nobre" Todos os direitos reservados.</p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>
+    <script>
+        $(function () {
+            $(".datepicker").datepicker({
+                dateFormat: 'yy-mm-dd'
+            });
+        });
+
+        function displayCurrentTime(cell) {
+            var currentTime = new Date().toLocaleTimeString();
+            cell.value = currentTime;
+            calculateTotal(cell);
+        }
+
+        function displayCurrentDate(cell) {
+            var currentDate = new Date().toISOString().split('T')[0];
+            cell.value = currentDate;
+            calculateTotal(cell);
+        }
+
+        function calculateTotal(element) {
+            var row = element.parentElement.parentElement;
+            var valor = parseFloat(row.querySelector('.valor').value.replace(',', '.')) || 0;
+            var aumento = parseFloat(row.querySelector('.aumento').value) || 0;
+            var acrescimo = (valor * (aumento / 100)).toFixed(2);
+            var valorTotal = (parseFloat(valor) + parseFloat(acrescimo)).toFixed(2);
+
+            row.querySelector('.valorAcrescimo').value = acrescimo.replace('.', ',');
+            row.querySelector('.valorTotal').value = valorTotal.replace('.', ',');
+
+            var isPaid = row.querySelector('.pago').checked;
+            row.querySelector('.valorTotal').style.color = isPaid ? 'black' : 'red';
+
+            updateSummary();
+        }
+
+        function updateSummary() {
+            var table = document.getElementById('dataTable');
+            var totalPago = 0;
+            var totalNaoPago = 0;
+
+            for (var i = 1, row; row = table.rows[i]; i++) {
+                var valorTotal = parseFloat(row.querySelector('.valorTotal').value.replace(',', '.')) || 0;
+                var isPaid = row.querySelector('.pago').checked;
+
+                if (isPaid) {
+                    totalPago += valorTotal;
+                } else {
+                    totalNaoPago += valorTotal;
+                }
+            }
+
+            document.getElementById('totalPago').value = totalPago.toFixed(2).replace('.', ',');
+            document.getElementById('totalNaoPago').value = totalNaoPago.toFixed(2).replace('.', ',');
+        }
+
+        function saveData() {
+            var table = document.getElementById('dataTable');
+            var data = [];
+            for (var i = 1, row; row = table.rows[i]; i++) {
+                var rowData = {};
+                rowData.conta = row.cells[0].querySelector('input').value;
+                rowData.horario = row.cells[1].querySelector('input').value;
+                rowData.data = row.cells[2].querySelector('input').value;
+                rowData.vencimento = row.cells[3].querySelector('input').value;
+                rowData.aumento = row.cells[4].querySelector('select').value;
+                rowData.prazo = row.cells[5].querySelector('select').value;
+                rowData.valor = row.cells[6].querySelector('input').value;
+                rowData.valorAcrescimo = row.cells[7].querySelector('input').value;
+                rowData.valorTotal = row.cells[8].querySelector('input').value;
+                rowData.pago = row.cells[9].querySelector('input').checked;
+                data.push(rowData);
+            }
+            localStorage.setItem('financeData', JSON.stringify(data));
+            localStorage.setItem('valorSalarial', document.getElementById('valorSalarial').value);
+            alert('Dados salvos com sucesso!');
+        }
+
+        function importExcel() {
+            var input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.xlsx,.xls';
+            input.onchange = function(e) {
+                var file = e.target.files[0];
+                if (!file) return;
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    var data = new Uint8Array(e.target.result);
+                    var workbook = XLSX.read(data, {type: 'array'});
+                    var firstSheetName = workbook.SheetNames[0];
+                    var firstSheet = workbook.Sheets[firstSheetName];
+                    var json = XLSX.utils.sheet_to_json(firstSheet, {header: 1});
+                    var dataRows = json.slice(1); // Pular cabeçalho
+                    populateTable(dataRows);
+                };
+                reader.readAsArrayBuffer(file);
+            };
+            input.click();
+        }
+
+        function exportToExcel() {
+            var table = document.getElementById('dataTable');
+            var data = [];
+            // Cabeçalhos
+            var headers = [];
+            for (var j = 0; j < table.rows[0].cells.length; j++) {
+                headers.push(table.rows[0].cells[j].textContent.trim());
+            }
+            data.push(headers);
+            // Dados
+            for (var i = 1; i < table.rows.length; i++) {
+                var row = [];
+                var cells = table.rows[i].cells;
+                for (var j = 0; j < cells.length; j++) {
+                    var el = cells[j].querySelector('input, select');
+                    if (el) {
+                        if (el.type === 'checkbox') {
+                            row.push(el.checked ? 'Sim' : 'Não');
+                        } else {
+                            row.push(el.value);
+                        }
+                    } else {
+                        row.push('');
+                    }
+                }
+                data.push(row);
+            }
+            var wb = XLSX.utils.book_new();
+            var ws = XLSX.utils.aoa_to_sheet(data);
+            XLSX.utils.book_append_sheet(wb, ws, 'Financeiro');
+            XLSX.writeFile(wb, 'controle_financeiro.xlsx');
+        }
+
+        function populateTable(jsonRows) {
+            var table = document.getElementById('dataTable');
+            // Salvar template (primeira linha de dados)
+            var template = table.rows[1].cloneNode(true);
+            // Limpar linhas de dados
+            while (table.rows.length > 1) {
+                table.deleteRow(1);
+            }
+            // Adicionar linhas de dados
+            jsonRows.forEach(function (rowData) {
+                var newRow = template.cloneNode(true);
+                newRow.querySelector('.conta').value = rowData[0] || '';
+                newRow.querySelector('.horario').value = rowData[1] || '';
+                newRow.querySelector('.data').value = rowData[2] || '';
+                newRow.querySelector('.vencimento').value = rowData[3] || '';
+                newRow.querySelector('.aumento').value = rowData[4] || '0';
+                newRow.querySelector('.prazo').value = rowData[5] || 'Bradesco';
+                newRow.querySelector('.valor').value = rowData[6] || '0.00';
+                newRow.querySelector('.valorAcrescimo').value = rowData[7] || '0.00';
+                newRow.querySelector('.valorTotal').value = rowData[8] || '0.00';
+                var paidValue = rowData[9];
+                newRow.querySelector('.pago').checked = (paidValue === true || paidValue === 'Sim' || paidValue === 'true' || paidValue === 1);
+                table.appendChild(newRow);
+                calculateTotal(newRow.querySelector('.valor'));
+            });
+            // Se não houver dados, adicionar uma linha vazia
+            if (table.rows.length === 1) {
+                var emptyRow = template.cloneNode(true);
+                emptyRow.querySelector('.conta').value = '';
+                emptyRow.querySelector('.horario').value = '';
+                emptyRow.querySelector('.data').value = '';
+                emptyRow.querySelector('.vencimento').value = '';
+                emptyRow.querySelector('.aumento').value = '0';
+                emptyRow.querySelector('.prazo').value = 'Bradesco';
+                emptyRow.querySelector('.valor').value = '0.00';
+                emptyRow.querySelector('.valorAcrescimo').value = '0.00';
+                emptyRow.querySelector('.valorTotal').value = '0.00';
+                emptyRow.querySelector('.pago').checked = false;
+                table.appendChild(emptyRow);
+            }
+            updateSummary();
+        }
+
+        document.getElementById('addRowButton').addEventListener('click', function () {
+            var table = document.getElementById('dataTable');
+            var newRow = table.rows[1].cloneNode(true);
+            newRow.querySelector('.conta').value = '';
+            newRow.querySelector('.horario').value = '';
+            newRow.querySelector('.data').value = '';
+            newRow.querySelector('.vencimento').value = '';
+            newRow.querySelector('.aumento').value = '0';
+            newRow.querySelector('.prazo').value = 'Bradesco';
+            newRow.querySelector('.valor').value = '0.00';
+            newRow.querySelector('.valorAcrescimo').value = '0.00';
+            newRow.querySelector('.valorTotal').value = '0.00';
+            newRow.querySelector('.pago').checked = false;
+            table.appendChild(newRow);
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            var savedData = localStorage.getItem('financeData');
+            var savedValorSalarial = localStorage.getItem('valorSalarial');
+            if (savedValorSalarial) {
+                document.getElementById('valorSalarial').value = savedValorSalarial;
+            }
+            if (savedData) {
+                savedData = JSON.parse(savedData);
+                var jsonRows = savedData.map(function(d) {
+                    return [d.conta, d.horario, d.data, d.vencimento, d.aumento, d.prazo, d.valor, d.valorAcrescimo, d.valorTotal, d.pago];
+                });
+                populateTable(jsonRows);
+            } else {
+                updateSummary();
+            }
+
+            // Marcar o link do menu ativo
+            var currentPage = window.location.pathname.split('/').pop() || 'index.html';
+            document.querySelectorAll('.nav-link').forEach(function(link) {
+                if (link.getAttribute('href') === currentPage) {
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
