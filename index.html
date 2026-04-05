@@ -56,7 +56,6 @@
             margin-bottom: 25px;
         }
 
-        /* === RESUMO COLORIDO === */
         .summary {
             display: flex;
             gap: 12px;
@@ -81,21 +80,9 @@
             border: 2px solid #ddd;
         }
 
-        /* Cores dos inputs do resumo */
-        #valorSalarial { 
-            border-color: #3498db !important; 
-            background-color: #f0f8ff;
-        }
-        #totalPago { 
-            border-color: #27ae60 !important; 
-            background-color: #f0fff4;
-            color: #27ae60;
-        }
-        #totalNaoPago { 
-            border-color: #e74c3c !important; 
-            background-color: #fff0f0;
-            color: #e74c3c;
-        }
+        #valorSalarial { border-color: #3498db !important; background-color: #f0f8ff; }
+        #totalPago { border-color: #27ae60 !important; background-color: #f0fff4; color: #27ae60; }
+        #totalNaoPago { border-color: #e74c3c !important; background-color: #fff0f0; color: #e74c3c; }
 
         .buttons {
             text-align: center;
@@ -121,7 +108,7 @@
 
         table {
             width: 100%;
-            min-width: 920px;           /* Reduzido um pouco para ajudar no celular */
+            min-width: 920px;
             border-collapse: separate;
             border-spacing: 0;
         }
@@ -146,16 +133,17 @@
         td input.form-control, 
         td select.form-select {
             font-size: 0.88rem;
-            padding: 5px 7px;
+            padding: 6px 8px;
             height: auto;
         }
 
-        /* Ajustes para caber melhor no celular */
+        /* Larguras ajustadas */
         .conta { min-width: 145px; }
         .vencimento { min-width: 105px; }
         .data { min-width: 98px; }
         .horario { min-width: 82px; }
-        .prazo { min-width: 88px; }           /* Banco */
+        .prazo { min-width: 88px; }
+        .aumento { min-width: 85px; }           /* Nova largura para o campo de % */
         .valor, .valorAcrescimo, .valorTotal { 
             min-width: 92px; 
             font-weight: 600;
@@ -163,10 +151,6 @@
 
         tr:nth-child(even) { background-color: #f8f9fa; }
         tr:hover { background-color: #f0f8f7; }
-
-        .pago:checked + .valorTotal {
-            color: var(--success-green) !important;
-        }
 
         footer {
             margin-top: auto;
@@ -228,7 +212,7 @@
                         <th>Horário</th>
                         <th>Data</th>
                         <th>Vencimento</th>
-                        <th>Aumento</th>
+                        <th>Aumento (%)</th>   <!-- Alterado para ficar mais claro -->
                         <th>Banco</th>
                         <th>Valor</th>
                         <th>Acréscimo</th>
@@ -244,16 +228,8 @@
                         <td><input type="text" class="data datepicker form-control" readonly onclick="displayCurrentDate(this)"></td>
                         <td><input type="text" class="vencimento datepicker form-control" value="" oninput="calculateTotal(this)"></td>
                         <td>
-                            <select class="aumento form-select" onchange="calculateTotal(this)">
-                                <option value="0.025">0.025%</option>
-                                <option value="0.5">0.5%</option>
-                                <option value="1">1%</option>
-                                <option value="2">2%</option>
-                                <option value="3">3%</option>
-                                <option value="4">0.7%</option>
-                                <option value="5">0.8%</option>
-                                <option value="0" selected>0%</option>
-                            </select>
+                            <!-- NOVO CAMPO: usuário digita a porcentagem -->
+                            <input type="number" step="0.01" class="aumento form-control" value="0" oninput="calculateTotal(this)" placeholder="0.00">
                         </td>
                         <td>
                             <select class="prazo form-select" onchange="calculateTotal(this)">
@@ -302,8 +278,10 @@
 
         function calculateTotal(element) {
             var row = element.parentElement.parentElement;
+            
             var valor = parseFloat(row.querySelector('.valor').value.replace(',', '.')) || 0;
-            var aumento = parseFloat(row.querySelector('.aumento').value) || 0;
+            var aumento = parseFloat(row.querySelector('.aumento').value) || 0;   // Agora pega o que o usuário digitou
+            
             var acrescimo = (valor * (aumento / 100)).toFixed(2);
             var valorTotal = (parseFloat(valor) + parseFloat(acrescimo)).toFixed(2);
 
@@ -345,7 +323,7 @@
                     horario: row.cells[1].querySelector('input').value,
                     data: row.cells[2].querySelector('input').value,
                     vencimento: row.cells[3].querySelector('input').value,
-                    aumento: row.cells[4].querySelector('select').value,
+                    aumento: row.cells[4].querySelector('input').value,   // Salva o valor digitado
                     prazo: row.cells[5].querySelector('select').value,
                     valor: row.cells[6].querySelector('input').value,
                     valorAcrescimo: row.cells[7].querySelector('input').value,
