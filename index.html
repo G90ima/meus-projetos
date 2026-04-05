@@ -56,9 +56,10 @@
             margin-bottom: 25px;
         }
 
+        /* === RESUMO COLORIDO === */
         .summary {
             display: flex;
-            gap: 15px;
+            gap: 12px;
             margin-bottom: 25px;
             justify-content: center;
             flex-wrap: wrap;
@@ -69,12 +70,31 @@
             flex-direction: column;
             font-weight: 600;
             color: #444;
-            min-width: 180px;
+            min-width: 160px;
         }
 
         .summary input {
-            padding: 10px 12px;
-            font-size: 1rem;
+            padding: 12px 14px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            border-radius: 10px;
+            border: 2px solid #ddd;
+        }
+
+        /* Cores dos inputs do resumo */
+        #valorSalarial { 
+            border-color: #3498db !important; 
+            background-color: #f0f8ff;
+        }
+        #totalPago { 
+            border-color: #27ae60 !important; 
+            background-color: #f0fff4;
+            color: #27ae60;
+        }
+        #totalNaoPago { 
+            border-color: #e74c3c !important; 
+            background-color: #fff0f0;
+            color: #e74c3c;
         }
 
         .buttons {
@@ -101,7 +121,7 @@
 
         table {
             width: 100%;
-            min-width: 950px;           /* Força rolagem horizontal no celular */
+            min-width: 920px;           /* Reduzido um pouco para ajudar no celular */
             border-collapse: separate;
             border-spacing: 0;
         }
@@ -109,33 +129,35 @@
         th {
             background: linear-gradient(90deg, var(--table-header), #27ae60);
             color: white;
-            padding: 12px 8px;
+            padding: 12px 6px;
             text-align: center;
             position: sticky;
             top: 0;
             z-index: 10;
-            font-size: 0.95rem;
+            font-size: 0.92rem;
             white-space: nowrap;
         }
 
         td {
-            padding: 8px 6px;
+            padding: 7px 5px;
             vertical-align: middle;
         }
 
         td input.form-control, 
         td select.form-select {
-            font-size: 0.90rem;
-            padding: 6px 8px;
+            font-size: 0.88rem;
+            padding: 5px 7px;
             height: auto;
         }
 
-        /* Largura mínima para campos que mais apertam */
-        .conta { min-width: 150px; }
-        .vencimento { min-width: 115px; }
-        .horario { min-width: 95px; }
+        /* Ajustes para caber melhor no celular */
+        .conta { min-width: 145px; }
+        .vencimento { min-width: 105px; }
+        .data { min-width: 98px; }
+        .horario { min-width: 82px; }
+        .prazo { min-width: 88px; }           /* Banco */
         .valor, .valorAcrescimo, .valorTotal { 
-            min-width: 95px; 
+            min-width: 92px; 
             font-weight: 600;
         }
 
@@ -434,12 +456,10 @@
             table.appendChild(newRow);
         }
 
-        // Adicionar nova linha
         document.getElementById('addRowButton').addEventListener('click', function () {
             addEmptyRow();
         });
 
-        // Carregar dados salvos ao abrir a página
         document.addEventListener('DOMContentLoaded', function() {
             var savedData = localStorage.getItem('financeData');
             var savedValorSalarial = localStorage.getItem('valorSalarial');
