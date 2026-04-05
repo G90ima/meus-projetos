@@ -10,18 +10,19 @@
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
     <style>
         :root {
-            --primary-teal: #006666;
-            --accent-blue: #00B4D8;
-            --success-green: #00C853;
-            --warning-red: #FF5252;
-            --light-bg: #f8f9fa;
+            --primary-teal: #2c3e50;
+            --accent-blue: #3498db;
+            --success-green: #27ae60;
+            --warning-red: #e74c3c;
+            --light-bg: #f4f6f9;
         }
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #004d4d 0%, #006666 50%, #008080 100%);
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 50%, #2c7a3f 100%);
             color: #333;
             margin: 0;
             padding: 0;
@@ -31,7 +32,7 @@
         }
 
         .navbar {
-            background-color: rgba(255, 255, 255, 0.96);
+            background-color: rgba(255, 255, 255, 0.97);
             backdrop-filter: blur(12px);
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
             padding: 0;
@@ -44,7 +45,7 @@
         .navbar-brand {
             font-size: 1.6rem;
             font-weight: 700;
-            color: var(--primary-teal) !important;
+            color: #2c3e50 !important;
             display: flex;
             align-items: center;
             gap: 10px;
@@ -55,35 +56,12 @@
             font-weight: 500;
             padding: 16px 22px;
             transition: all 0.3s ease;
-            position: relative;
         }
 
         .navbar-nav .nav-link:hover,
         .navbar-nav .nav-link.active {
-            color: var(--primary-teal) !important;
-            background-color: rgba(0, 102, 102, 0.08);
-        }
-
-        .navbar-nav .nav-link::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 50%;
-            width: 0;
-            height: 3px;
-            background: var(--accent-blue);
-            transition: all 0.3s ease;
-            transform: translateX(-50%);
-        }
-
-        .navbar-nav .nav-link:hover::after,
-        .navbar-nav .nav-link.active::after {
-            width: 70%;
-        }
-
-        .menu-icon {
-            margin-right: 8px;
-            width: 18px;
+            color: #2c3e50 !important;
+            background-color: rgba(44, 62, 80, 0.08);
         }
 
         .container {
@@ -93,15 +71,14 @@
             background-color: white;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
             border-radius: 16px;
-            border: 1px solid rgba(0, 102, 102, 0.1);
+            border: 1px solid rgba(44, 122, 63, 0.15);
         }
 
         h2 {
             text-align: center;
-            color: var(--primary-teal);
+            color: #2c3e50;
             font-weight: 700;
             margin-bottom: 30px;
-            letter-spacing: 0.5px;
         }
 
         .summary {
@@ -125,12 +102,11 @@
             border: 2px solid #ddd;
             border-radius: 10px;
             font-size: 1.1rem;
-            transition: border 0.3s;
         }
 
         .summary input:focus {
-            border-color: var(--accent-blue);
-            box-shadow: 0 0 0 3px rgba(0, 180, 216, 0.15);
+            border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.15);
             outline: none;
         }
 
@@ -159,17 +135,17 @@
         }
 
         .btn-primary {
-            background: linear-gradient(90deg, var(--primary-teal), #008080);
+            background: linear-gradient(90deg, #2c3e50, #34495e);
             border: none;
         }
 
         .btn-primary:hover {
             transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(0, 102, 102, 0.3);
+            box-shadow: 0 8px 20px rgba(44, 62, 80, 0.4);
         }
 
         .btn-success {
-            background-color: var(--success-green);
+            background-color: #27ae60;
             border: none;
         }
 
@@ -187,7 +163,7 @@
         }
 
         th {
-            background: linear-gradient(90deg, var(--primary-teal), #008080);
+            background: linear-gradient(90deg, #2c7a3f, #27ae60);
             color: white;
             font-weight: 600;
             padding: 14px 10px;
@@ -204,7 +180,7 @@
         }
 
         tr:nth-child(even) {
-            background-color: #f9f9f9;
+            background-color: #f8f9fa;
         }
 
         tr:hover {
@@ -215,12 +191,11 @@
             border-radius: 8px;
             border: 1px solid #ced4da;
             padding: 8px 12px;
-            transition: all 0.2s;
         }
 
         input.form-control:focus, select.form-select:focus {
-            border-color: var(--accent-blue);
-            box-shadow: 0 0 0 3px rgba(0, 180, 216, 0.2);
+            border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
         }
 
         .valorTotal {
@@ -229,22 +204,16 @@
         }
 
         .pago:checked + .valorTotal {
-            color: var(--success-green) !important;
+            color: #27ae60 !important;
         }
 
         footer {
             margin-top: auto;
             padding: 25px;
             text-align: center;
-            color: rgba(255,255,255,0.85);
-            background: rgba(0, 0, 0, 0.25);
+            color: rgba(255,255,255,0.9);
+            background: rgba(0, 0, 0, 0.3);
             font-size: 0.95rem;
-        }
-
-        /* Melhorias visuais extras */
-        .form-control[readonly] {
-            background-color: #f8f9fa;
-            cursor: default;
         }
     </style>
 </head>
@@ -331,7 +300,6 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <!-- Primeira linha de exemplo mantida igual -->
                     <tr>
                         <td><input type="text" class="conta form-control" value="" oninput="calculateTotal(this)"></td>
                         <td><input type="text" class="horario form-control" readonly onclick="displayCurrentTime(this)"></td>
@@ -375,7 +343,6 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>
     <script>
-        // Todo o JavaScript permanece **idêntico** ao original (não alterei nada aqui para não quebrar funcionalidade)
         $(function () {
             $(".datepicker").datepicker({
                 dateFormat: 'yy-mm-dd'
@@ -405,7 +372,7 @@
             row.querySelector('.valorTotal').value = valorTotal.replace('.', ',');
 
             var isPaid = row.querySelector('.pago').checked;
-            row.querySelector('.valorTotal').style.color = isPaid ? 'var(--success-green)' : 'var(--warning-red)';
+            row.querySelector('.valorTotal').style.color = isPaid ? '#27ae60' : '#e74c3c';
 
             updateSummary();
         }
@@ -449,7 +416,7 @@
             }
             localStorage.setItem('financeData', JSON.stringify(data));
             localStorage.setItem('valorSalarial', document.getElementById('valorSalarial').value);
-            alert('Dados salvos com sucesso!');
+            alert('✅ Dados salvos com sucesso!');
         }
 
         function importExcel() {
