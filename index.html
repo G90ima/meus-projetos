@@ -108,7 +108,7 @@
 
         table {
             width: 100%;
-            min-width: 920px;
+            min-width: 950px;
             border-collapse: separate;
             border-spacing: 0;
         }
@@ -139,11 +139,10 @@
 
         /* Larguras ajustadas */
         .conta { min-width: 145px; }
-        .vencimento { min-width: 105px; }
-        .data { min-width: 98px; }
-        .horario { min-width: 82px; }
+        .horario { min-width: 95px; }
+        .data, .vencimento { min-width: 110px; }
+        .aumento { min-width: 85px; }
         .prazo { min-width: 88px; }
-        .aumento { min-width: 85px; }           /* Nova largura para o campo de % */
         .valor, .valorAcrescimo, .valorTotal { 
             min-width: 92px; 
             font-weight: 600;
@@ -151,6 +150,16 @@
 
         tr:nth-child(even) { background-color: #f8f9fa; }
         tr:hover { background-color: #f0f8f7; }
+
+        /* Calendário menor e mais bonito */
+        .ui-datepicker {
+            font-size: 0.85rem !important;
+            width: 240px !important;
+        }
+
+        .ui-datepicker th, .ui-datepicker td {
+            padding: 4px !important;
+        }
 
         footer {
             margin-top: auto;
@@ -212,7 +221,7 @@
                         <th>Horário</th>
                         <th>Data</th>
                         <th>Vencimento</th>
-                        <th>Aumento (%)</th>   <!-- Alterado para ficar mais claro -->
+                        <th>Aumento (%)</th>
                         <th>Banco</th>
                         <th>Valor</th>
                         <th>Acréscimo</th>
@@ -225,10 +234,9 @@
                     <tr>
                         <td><input type="text" class="conta form-control" value="" oninput="calculateTotal(this)"></td>
                         <td><input type="text" class="horario form-control" readonly onclick="displayCurrentTime(this)"></td>
-                        <td><input type="text" class="data datepicker form-control" readonly onclick="displayCurrentDate(this)"></td>
-                        <td><input type="text" class="vencimento datepicker form-control" value="" oninput="calculateTotal(this)"></td>
+                        <td><input type="text" class="data datepicker form-control" readonly onclick="showDatePicker(this)"></td>
+                        <td><input type="text" class="vencimento datepicker form-control" readonly onclick="showDatePicker(this)"></td>
                         <td>
-                            <!-- NOVO CAMPO: usuário digita a porcentagem -->
                             <input type="number" step="0.01" class="aumento form-control" value="0" oninput="calculateTotal(this)" placeholder="0.00">
                         </td>
                         <td>
@@ -259,17 +267,55 @@
 
     <script>
         $(function () {
-            $(".datepicker").datepicker({
-                dateFormat: 'yy-mm-dd'
-            });
+            // Configuração do datepicker menor e em português
+            $.datepicker.regional['pt-BR'] = {
+                closeText: 'Fechar',
+                prevText: '&#x3C;Anterior',
+                nextText: 'Próximo&#x3E;',
+                currentText: 'Hoje',
+                monthNames: ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'],
+                monthNamesShort: ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'],
+                dayNames: ['Domingo','Segunda-feira','Terça-feira','Quarta-feira','Quinta-feira','Sexta-feira','Sábado'],
+                dayNamesShort: ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'],
+                dayNamesMin: ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'],
+                weekHeader: 'Sm',
+                dateFormat: 'yy-mm-dd',
+                firstDay: 0,
+                isRTL: false,
+                showMonthAfterYear: false,
+                yearSuffix: ''
+            };
+            $.datepicker.setDefaults($.datepicker.regional['pt-BR']);
         });
 
+        // Função para mostrar o calendário menor
+        function showDatePicker(cell) {
+            $(cell).datepicker({
+                dateFormat: 'yy-mm-dd',
+                changeMonth: true,
+                changeYear: true,
+                showButtonPanel: true,
+                onSelect: function(dateText) {
+                    cell.value = dateText;
+                    calculateTotal(cell);
+                    $(this).datepicker("destroy"); // Fecha após selecionar
+                }
+            }).datepicker("show");
+        }
+
+        // Horário com SEGUNDOS
         function displayCurrentTime(cell) {
-            var currentTime = new Date().toLocaleTimeString('pt-BR', {hour: '2-digit', minute: '2-digit'});
-            cell.value = currentTime;
+            var now = new Date();
+            var time = now.toLocaleTimeString('pt-BR', { 
+                hour: '2-digit', 
+                minute: '2-digit', 
+                second: '2-digit' 
+            });
+            cell.value = time;
             calculateTotal(cell);
         }
 
+        // Data atual (mantido como backup)
         function displayCurrentDate(cell) {
             var currentDate = new Date().toISOString().split('T')[0];
             cell.value = currentDate;
@@ -280,7 +326,7 @@
             var row = element.parentElement.parentElement;
             
             var valor = parseFloat(row.querySelector('.valor').value.replace(',', '.')) || 0;
-            var aumento = parseFloat(row.querySelector('.aumento').value) || 0;   // Agora pega o que o usuário digitou
+            var aumento = parseFloat(row.querySelector('.aumento').value) || 0;
             
             var acrescimo = (valor * (aumento / 100)).toFixed(2);
             var valorTotal = (parseFloat(valor) + parseFloat(acrescimo)).toFixed(2);
@@ -323,7 +369,7 @@
                     horario: row.cells[1].querySelector('input').value,
                     data: row.cells[2].querySelector('input').value,
                     vencimento: row.cells[3].querySelector('input').value,
-                    aumento: row.cells[4].querySelector('input').value,   // Salva o valor digitado
+                    aumento: row.cells[4].querySelector('input').value,
                     prazo: row.cells[5].querySelector('select').value,
                     valor: row.cells[6].querySelector('input').value,
                     valorAcrescimo: row.cells[7].querySelector('input').value,
@@ -337,6 +383,7 @@
             alert('✅ Dados salvos com sucesso!');
         }
 
+        // As funções de import/export e addRow permanecem iguais
         function importExcel() {
             var input = document.createElement('input');
             input.type = 'file';
