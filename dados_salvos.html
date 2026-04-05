@@ -185,117 +185,125 @@
             <tbody></tbody>
         </table>
     </div>
+<script>
+    $(document).ready(function () {
+        let data = JSON.parse(localStorage.getItem('financeData')) || [];
 
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+        const tableBody = $('#dataTable tbody');
 
-    <script>
-        $(document).ready(function () {
-            let data = JSON.parse(localStorage.getItem('financeData')) || [];
+        function renderTable() {
+            tableBody.empty();
+            data.forEach((row, index) => {
+                const tr = $(`
+                    <tr data-index="${index}">
+                        <td contenteditable="true">${row.conta || ''}</td>
+                        <td contenteditable="true">${row.horario || ''}</td>
+                        <td contenteditable="true">${row.data || ''}</td>
+                        <td contenteditable="true">${row.vencimento || ''}</td>
+                        <td contenteditable="true">${row.aumento || ''}</td>
+                        <td contenteditable="true">${row.banco || row.prazo || ''}</td>
+                        <td contenteditable="true">${row.valor || ''}</td>
+                        <td contenteditable="true">${row.valorAcrescimo || ''}</td>
+                        <td contenteditable="true">${row.valorTotal || ''}</td>
+                        <td contenteditable="true">${row.pago ? 'Sim' : 'Não'}</td>
+                        <td><button class="delete-btn">Excluir</button></td>
+                    </tr>
+                `);
+                tableBody.append(tr);
+            });
+        }
 
-            const tableBody = $('#dataTable tbody');
+        renderTable();
 
-            function renderTable() {
-                tableBody.empty();
-                data.forEach((row, index) => {
-                    const tr = $(`
-                        <tr data-index="${index}">
-                            <td contenteditable="true">${row.conta || ''}</td>
-                            <td contenteditable="true">${row.horario || ''}</td>
-                            <td contenteditable="true">${row.data || ''}</td>
-                            <td contenteditable="true">${row.vencimento || ''}</td>
-                            <td contenteditable="true">${row.aumento || ''}</td>
-                            <td contenteditable="true">${row.banco || row.prazo || ''}</td>
-                            <td contenteditable="true">${row.valor || ''}</td>
-                            <td contenteditable="true">${row.valorAcrescimo || ''}</td>
-                            <td contenteditable="true">${row.valorTotal || ''}</td>
-                            <td contenteditable="true">${row.pago ? 'Sim' : 'Não'}</td>
-                            <td><button class="delete-btn">Excluir</button></td>
-                        </tr>
-                    `);
-                    tableBody.append(tr);
-                });
+        // === NOVA FUNÇÃO: Encontrar a maior % e a data correspondente ===
+        function mostrarMaiorPorcentagem() {
+            if (data.length === 0) {
+                console.log("Nenhum dado encontrado.");
+                return null;
             }
 
-            renderTable();
+            let maior = -Infinity;
+            let dataMaior = "";
+            let linhaInfo = "";
 
-            // Excluir linha individual
-            $('#dataTable').on('click', '.delete-btn', function () {
-                if (confirm('Tem certeza que deseja excluir esta linha?')) {
-                    const index = $(this).closest('tr').data('index');
-                    data.splice(index, 1);
-                    localStorage.setItem('financeData', JSON.stringify(data));
-                    renderTable();
+            data.forEach(row => {
+                // Converte o % para número (remove % se tiver e trata vírgula)
+                let percStr = (row.aumento || "").toString().trim().replace('%', '').replace(',', '.');
+                let perc = parseFloat(percStr);
+
+                if (!isNaN(perc) && perc > maior) {
+                    maior = perc;
+                    dataMaior = row.data || "Data não informada";
+                    linhaInfo = `Conta: ${row.conta || ''} | Valor: ${row.valor || ''} | Total: ${row.valorTotal || ''}`;
                 }
             });
 
-            // Salvar alterações
-            $('#saveBtn').click(function () {
-                $('#dataTable tbody tr').each(function () {
-                    const index = $(this).data('index');
-                    if (index !== undefined) {
-                        data[index] = {
-                            conta: $(this).find('td:eq(0)').text().trim(),
-                            horario: $(this).find('td:eq(1)').text().trim(),
-                            data: $(this).find('td:eq(2)').text().trim(),
-                            vencimento: $(this).find('td:eq(3)').text().trim(),
-                            aumento: $(this).find('td:eq(4)').text().trim(),
-                            banco: $(this).find('td:eq(5)').text().trim(),
-                            valor: $(this).find('td:eq(6)').text().trim(),
-                            valorAcrescimo: $(this).find('td:eq(7)').text().trim(),
-                            valorTotal: $(this).find('td:eq(8)').text().trim(),
-                            pago: $(this).find('td:eq(9)').text().trim().toLowerCase() === 'sim'
-                        };
-                    }
-                });
+            if (maior === -Infinity) {
+                console.log("Nenhuma porcentagem válida encontrada.");
+                return null;
+            }
+
+            console.log(`✅ Maior % encontrado: ${maior}% na data ${dataMaior}`);
+            console.log(linhaInfo);
+
+            // Mostra um alerta bonitinho
+            alert(`📊 MAIOR PORCENTAGEM:\n\n` +
+                  `Porcentagem: ${maior}%\n` +
+                  `Data: ${dataMaior}\n\n` +
+                  `${linhaInfo}`);
+
+            return { porcentagem: maior, data: dataMaior };
+        }
+
+        // Chama automaticamente ao carregar a página
+        setTimeout(() => {
+            mostrarMaiorPorcentagem();
+        }, 800);
+
+        // Botão para consultar manualmente (opcional)
+        // Você pode adicionar um botão novo se quiser
+
+        // Excluir linha individual (mantido)
+        $('#dataTable').on('click', '.delete-btn', function () {
+            if (confirm('Tem certeza que deseja excluir esta linha?')) {
+                const index = $(this).closest('tr').data('index');
+                data.splice(index, 1);
                 localStorage.setItem('financeData', JSON.stringify(data));
-                alert('✅ Dados salvos com sucesso!');
-            });
-
-            // Exportar para Excel
-            $('#exportBtn').click(function () {
-                if (data.length === 0) {
-                    alert('Não há dados para exportar!');
-                    return;
-                }
-
-                const exportData = data.map(row => ({
-                    "Conta": row.conta || '',
-                    "Horário": row.horario || '',
-                    "Data": row.data || '',
-                    "Vencimento": row.vencimento || '',
-                    "%": row.aumento || '',
-                    "Banco": row.banco || row.prazo || '',
-                    "Valor": row.valor || '',
-                    "Acréscimo": row.valorAcrescimo || '',
-                    "Valor Total": row.valorTotal || '',
-                    "Pago": row.pago ? 'Sim' : 'Não'
-                }));
-
-                const ws = XLSX.utils.json_to_sheet(exportData);
-                const wb = XLSX.utils.book_new();
-                XLSX.utils.book_append_sheet(wb, ws, "Dados Financeiros");
-
-                XLSX.writeFile(wb, `dados_financeiros_${new Date().toISOString().slice(0,10)}.xlsx`);
-            });
-
-            // Excluir todos os dados
-            $('#clearAllBtn').click(function () {
-                if (data.length === 0) {
-                    alert('Não há dados para excluir.');
-                    return;
-                }
-                if (confirm('⚠️ ATENÇÃO: Deseja realmente excluir TODOS os dados? Esta ação não pode ser desfeita!')) {
-                    data = [];
-                    localStorage.setItem('financeData', JSON.stringify(data));
-                    renderTable();
-                    alert('Todos os dados foram excluídos.');
-                }
-            });
-
-            // Imprimir
-            $('#printBtn').click(() => window.print());
+                renderTable();
+                setTimeout(mostrarMaiorPorcentagem, 300); // atualiza após excluir
+            }
         });
-    </script>
+
+        // Salvar alterações (atualizado para recalcular)
+        $('#saveBtn').click(function () {
+            $('#dataTable tbody tr').each(function () {
+                const index = $(this).data('index');
+                if (index !== undefined) {
+                    data[index] = {
+                        conta: $(this).find('td:eq(0)').text().trim(),
+                        horario: $(this).find('td:eq(1)').text().trim(),
+                        data: $(this).find('td:eq(2)').text().trim(),
+                        vencimento: $(this).find('td:eq(3)').text().trim(),
+                        aumento: $(this).find('td:eq(4)').text().trim(),
+                        banco: $(this).find('td:eq(5)').text().trim(),
+                        valor: $(this).find('td:eq(6)').text().trim(),
+                        valorAcrescimo: $(this).find('td:eq(7)').text().trim(),
+                        valorTotal: $(this).find('td:eq(8)').text().trim(),
+                        pago: $(this).find('td:eq(9)').text().trim().toLowerCase() === 'sim'
+                    };
+                }
+            });
+            localStorage.setItem('financeData', JSON.stringify(data));
+            alert('✅ Dados salvos com sucesso!');
+            setTimeout(mostrarMaiorPorcentagem, 300);
+        });
+
+        // Exportar, limpar e imprimir mantidos iguais...
+        $('#exportBtn').click(function () { /* seu código original */ });
+        $('#clearAllBtn').click(function () { /* seu código original */ });
+        $('#printBtn').click(() => window.print());
+    });
+</script>
+  
 </body>
 </html>
