@@ -31,7 +31,15 @@
             min-height: 100vh;
         }
 
-        .navbar { background-color: rgba(255,255,255,0.97); backdrop-filter: blur(12px); box-shadow: 0 4px 20px rgba(0,0,0,0.12); position: fixed; top: 0; width: 100%; z-index: 1000; }
+        .navbar {
+            background-color: rgba(255,255,255,0.97);
+            backdrop-filter: blur(12px);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.12);
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+        }
 
         .container {
             max-width: 1280px;
@@ -55,7 +63,7 @@
         .buttons { text-align: center; margin: 25px 0; display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
         .btn { padding: 10px 20px; border-radius: 50px; font-weight: 600; }
 
-        .table-container { overflow-x: auto; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.08); }
+        .table-container { overflow-x: auto; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.08); -webkit-overflow-scrolling: touch; }
 
         table { width: 100%; min-width: 950px; border-collapse: separate; border-spacing: 0; }
         th { background: linear-gradient(90deg, var(--table-header), #27ae60); color: white; padding: 12px 6px; text-align: center; position: sticky; top: 0; z-index: 10; }
@@ -63,56 +71,33 @@
 
         td input.form-control, td select.form-select { font-size: 0.88rem; padding: 6px 8px; height: auto; }
 
-        /* === CALENDÁRIO MUITO MENOR NO CELULAR === */
+        /* CALENDÁRIO ULTRA COMPACTO NO CELULAR */
         .ui-datepicker {
-            font-size: 0.82rem !important;
             width: 260px !important;
-            padding: 6px !important;
+            font-size: 0.80rem !important;
+            padding: 5px !important;
         }
 
-        .ui-datepicker th, .ui-datepicker td {
-            padding: 3px 2px !important;
-            font-size: 0.78rem;
-        }
-
-        .ui-datepicker .ui-datepicker-header {
-            padding: 5px 4px !important;
-        }
-
-        /* Versão ULTRA COMPACTA para CELULAR */
         @media (max-width: 768px) {
             .ui-datepicker {
-                width: 195px !important;
-                font-size: 0.68rem !important;
-                padding: 4px !important;
+                width: 175px !important;
+                font-size: 0.64rem !important;
+                padding: 3px !important;
             }
-
             .ui-datepicker th, .ui-datepicker td {
-                padding: 2px 1px !important;
-                height: 24px;
-                font-size: 0.72rem;
-            }
-
-            .ui-datepicker .ui-datepicker-header {
-                padding: 4px 2px !important;
-            }
-
-            .ui-datepicker .ui-datepicker-prev,
-            .ui-datepicker .ui-datepicker-next {
-                width: 20px;
+                padding: 1px !important;
                 height: 20px;
-                top: 5px;
+                font-size: 0.67rem;
             }
-
-            .ui-datepicker .ui-datepicker-title {
-                font-size: 0.8rem;
+            .ui-datepicker .ui-datepicker-header {
+                padding: 3px 2px !important;
             }
-
+            .ui-datepicker .ui-datepicker-prev, .ui-datepicker .ui-datepicker-next {
+                width: 18px; height: 18px; top: 4px;
+            }
             .ui-datepicker button.ui-datepicker-current,
             .ui-datepicker button.ui-datepicker-close {
-                font-size: 0.7rem;
-                padding: 2px 5px;
-                margin: 2px;
+                font-size: 0.65rem; padding: 1px 5px;
             }
         }
 
@@ -183,6 +168,7 @@
                     </tr>
                 </thead>
                 <tbody>
+                    <!-- Linha inicial -->
                     <tr>
                         <td><input type="text" class="conta form-control" value="" oninput="calculateTotal(this)"></td>
                         <td><input type="text" class="horario form-control" readonly onclick="displayCurrentTime(this)"></td>
@@ -216,13 +202,13 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
+        // Configuração do calendário em português
         $(function () {
             $.datepicker.regional['pt-BR'] = {
                 closeText: 'Fechar',
-                prevText: 'Anterior',
-                nextText: 'Próximo',
+                prevText: '◀',
+                nextText: '▶',
                 currentText: 'Hoje',
-                monthNames: ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'],
                 monthNamesShort: ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'],
                 dayNamesMin: ['D','S','T','Q','Q','S','S'],
                 dateFormat: 'yy-mm-dd',
@@ -247,7 +233,9 @@
 
         function displayCurrentTime(cell) {
             var now = new Date();
-            var time = now.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+            var time = now.toLocaleTimeString('pt-BR', { 
+                hour: '2-digit', minute: '2-digit', second: '2-digit' 
+            });
             cell.value = time;
             calculateTotal(cell);
         }
@@ -305,16 +293,121 @@
             alert('✅ Dados salvos com sucesso!');
         }
 
-        // Funções restantes (importExcel, exportToExcel, populateTable, addEmptyRow)
-        // Copie-as do seu código anterior se quiser manter exatamente igual.
-        // Para brevidade, deixei só o essencial aqui. Se precisar, posso incluir todas.
+        function importExcel() {
+            var input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.xlsx,.xls';
+            input.onchange = function(e) {
+                var file = e.target.files[0];
+                if (!file) return;
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    var data = new Uint8Array(e.target.result);
+                    var workbook = XLSX.read(data, {type: 'array'});
+                    var firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+                    var json = XLSX.utils.sheet_to_json(firstSheet, {header: 1});
+                    populateTable(json.slice(1));
+                };
+                reader.readAsArrayBuffer(file);
+            };
+            input.click();
+        }
 
-        document.getElementById('addRowButton').addEventListener('click', function () {
-            // Adicionar linha vazia (mesmo código anterior)
-            addEmptyRow();
+        function exportToExcel() {
+            var table = document.getElementById('dataTable');
+            var data = [];
+            var headers = [];
+            for (var j = 0; j < table.rows[0].cells.length; j++) {
+                headers.push(table.rows[0].cells[j].textContent.trim());
+            }
+            data.push(headers);
+
+            for (var i = 1; i < table.rows.length; i++) {
+                var row = [];
+                var cells = table.rows[i].cells;
+                for (var j = 0; j < cells.length; j++) {
+                    var el = cells[j].querySelector('input, select');
+                    if (el) {
+                        if (el.type === 'checkbox') {
+                            row.push(el.checked ? 'Sim' : 'Não');
+                        } else {
+                            row.push(el.value || '');
+                        }
+                    } else {
+                        row.push('');
+                    }
+                }
+                data.push(row);
+            }
+            var wb = XLSX.utils.book_new();
+            var ws = XLSX.utils.aoa_to_sheet(data);
+            XLSX.utils.book_append_sheet(wb, ws, 'Financeiro');
+            XLSX.writeFile(wb, 'controle_financeiro_' + new Date().toISOString().slice(0,10) + '.xlsx');
+        }
+
+        function populateTable(jsonRows) {
+            var table = document.getElementById('dataTable');
+            var template = table.rows[1].cloneNode(true);
+            while (table.rows.length > 1) table.deleteRow(1);
+
+            jsonRows.forEach(function (rowData) {
+                var newRow = template.cloneNode(true);
+                newRow.querySelector('.conta').value = rowData[0] || '';
+                newRow.querySelector('.horario').value = rowData[1] || '';
+                newRow.querySelector('.data').value = rowData[2] || '';
+                newRow.querySelector('.vencimento').value = rowData[3] || '';
+                newRow.querySelector('.aumento').value = rowData[4] || '0';
+                newRow.querySelector('.prazo').value = rowData[5] || 'Bradesco';
+                newRow.querySelector('.valor').value = rowData[6] || '0.00';
+                newRow.querySelector('.valorAcrescimo').value = rowData[7] || '0.00';
+                newRow.querySelector('.valorTotal').value = rowData[8] || '0.00';
+                newRow.querySelector('.pago').checked = (rowData[9] === 'Sim' || rowData[9] === true);
+
+                table.appendChild(newRow);
+                calculateTotal(newRow.querySelector('.valor'));
+            });
+
+            if (table.rows.length === 1) addEmptyRow();
+            updateSummary();
+        }
+
+        function addEmptyRow() {
+            var table = document.getElementById('dataTable');
+            var newRow = table.rows[1].cloneNode(true);
+            newRow.querySelector('.conta').value = '';
+            newRow.querySelector('.horario').value = '';
+            newRow.querySelector('.data').value = '';
+            newRow.querySelector('.vencimento').value = '';
+            newRow.querySelector('.aumento').value = '0';
+            newRow.querySelector('.prazo').value = 'Bradesco';
+            newRow.querySelector('.valor').value = '0.00';
+            newRow.querySelector('.valorAcrescimo').value = '0.00';
+            newRow.querySelector('.valorTotal').value = '0.00';
+            newRow.querySelector('.pago').checked = false;
+            table.appendChild(newRow);
+        }
+
+        // Eventos
+        document.getElementById('addRowButton').addEventListener('click', addEmptyRow);
+
+        document.addEventListener('DOMContentLoaded', function() {
+            var savedData = localStorage.getItem('financeData');
+            var savedValorSalarial = localStorage.getItem('valorSalarial');
+
+            if (savedValorSalarial) document.getElementById('valorSalarial').value = savedValorSalarial;
+
+            if (savedData) {
+                var data = JSON.parse(savedData);
+                var jsonRows = data.map(d => [
+                    d.conta, d.horario, d.data, d.vencimento, 
+                    d.aumento, d.prazo, d.valor, d.valorAcrescimo, 
+                    d.valorTotal, d.pago ? 'Sim' : 'Não'
+                ]);
+                populateTable(jsonRows);
+            } else {
+                updateSummary();
+            }
         });
-
-        // ... resto do código onload ...
     </script>
 </body>
 </html>
