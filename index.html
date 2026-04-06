@@ -31,33 +31,88 @@
             min-height: 100vh;
         }
 
-        .navbar { background-color: rgba(255,255,255,0.97); backdrop-filter: blur(12px); box-shadow: 0 4px 20px rgba(0,0,0,0.12); position: fixed; top: 0; width: 100%; z-index: 1000; }
+        .navbar {
+            background-color: rgba(255,255,255,0.97);
+            backdrop-filter: blur(12px);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.12);
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+        }
 
         .container {
             max-width: 1280px;
             margin: 100px auto 40px;
-            padding: 12px;
+            padding: 15px;
             background-color: white;
             box-shadow: 0 10px 30px rgba(0,0,0,0.15);
             border-radius: 16px;
         }
 
-        h2 { text-align: center; color: var(--primary-dark); margin-bottom: 20px; }
+        h2 {
+            text-align: center;
+            color: var(--primary-dark);
+            margin-bottom: 20px;
+        }
 
-        .summary { display: flex; gap: 10px; margin-bottom: 20px; justify-content: center; flex-wrap: wrap; }
-        .summary label { display: flex; flex-direction: column; font-weight: 600; color: #444; min-width: 140px; }
-        .summary input { padding: 10px 12px; font-size: 1rem; border-radius: 8px; border: 2px solid #ddd; }
+        .summary {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 25px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
 
-        .buttons { text-align: center; margin: 20px 0; display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
-        .btn { padding: 9px 18px; border-radius: 50px; font-weight: 600; font-size: 0.95rem; }
+        .summary label {
+            display: flex;
+            flex-direction: column;
+            font-weight: 600;
+            color: #444;
+            min-width: 160px;
+        }
 
-        .table-container { overflow-x: auto; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.08); -webkit-overflow-scrolling: touch; }
+        .summary input {
+            padding: 10px 12px;
+            font-size: 1rem;
+            border-radius: 8px;
+            border: 2px solid #ddd;
+        }
 
-        table { width: 100%; min-width: 920px; border-collapse: separate; border-spacing: 0; }
+        .buttons {
+            text-align: center;
+            margin: 20px 0 25px;
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .table-container {
+            overflow-x: auto;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            -webkit-overflow-scrolling: touch;
+        }
+
+        table {
+            width: 100%;
+            min-width: 920px;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+
         th {
             background: linear-gradient(90deg, var(--table-header), #27ae60);
             color: white;
-            padding: 10px 5px;
+            padding: 12px 6px;
             text-align: center;
             position: sticky;
             top: 0;
@@ -65,57 +120,56 @@
             font-size: 0.9rem;
             white-space: nowrap;
         }
-        td { padding: 5px 4px; vertical-align: middle; }
 
-        td input.form-control, td select.form-select {
-            font-size: 0.85rem;
-            padding: 5px 6px;
+        td {
+            padding: 8px 6px;
+            vertical-align: middle;
+        }
+
+        td input.form-control,
+        td select.form-select {
+            font-size: 0.87rem;
+            padding: 6px 8px;
             height: auto;
         }
 
-        /* Larguras ajustadas para celular */
-        .conta { min-width: 130px; }
-        .horario { min-width: 92px; }
-        .data, .vencimento { min-width: 105px; }
-        .aumento { min-width: 80px; }
-        .prazo { min-width: 85px; }
-        .valor, .valorAcrescimo, .valorTotal { min-width: 88px; font-weight: 600; }
+        /* Larguras otimizadas */
+        .conta { min-width: 140px; }
+        .horario { min-width: 95px; }
+        .data, .vencimento { min-width: 110px; }
+        .aumento { min-width: 85px; }
+        .prazo { min-width: 90px; }
+        .valor, .valorAcrescimo, .valorTotal { 
+            min-width: 92px; 
+            font-weight: 600;
+        }
 
         tr:nth-child(even) { background-color: #f8f9fa; }
         tr:hover { background-color: #f0f8f7; }
 
-        /* Calendário menor e otimizado para celular */
+        /* Calendário otimizado para celular */
         .ui-datepicker {
-            font-size: 0.78rem !important;
-            width: 200px !important;
+            font-size: 0.8rem !important;
+            width: 210px !important;
             box-shadow: 0 4px 15px rgba(0,0,0,0.2);
         }
 
         .ui-datepicker th, .ui-datepicker td {
-            padding: 3px !important;
-            font-size: 0.78rem;
-        }
-
-        .ui-datepicker .ui-datepicker-header {
-            padding: 4px 0;
-        }
-
-        .ui-datepicker .ui-datepicker-title {
-            font-size: 0.85rem;
-        }
-
-        .ui-datepicker {
-            position: absolute !important;
-            z-index: 1050 !important;
+            padding: 4px !important;
         }
 
         footer {
-            margin-top: auto;
-            padding: 15px;
+            margin-top: 30px;
+            padding: 18px;
             text-align: center;
             color: rgba(255,255,255,0.9);
             background: rgba(0, 0, 0, 0.3);
             font-size: 0.9rem;
+        }
+
+        .valorTotal {
+            font-weight: 700;
+            font-size: 1.05rem;
         }
     </style>
 </head>
@@ -123,16 +177,16 @@
 
     <nav class="navbar navbar-expand-lg">
         <div class="container-fluid">
-            <a class="navbar-brand" href="index2.html"><i class="fas fa-chart-line"></i> Controle Financeiro</a>
+            <a class="navbar-brand" href="#"><i class="fas fa-chart-line"></i> Controle Financeiro</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
                 <ul class="navbar-nav">
-                    <li class="nav-item"><a class="nav-link" href="index2.html"><i class="fas fa-home"></i> Dashboard</a></li>
-                    <li class="nav-item"><a class="nav-link" href="dados_salvos.html"><i class="fas fa-database"></i> Dados Salvos</a></li>
-                    <li class="nav-item"><a class="nav-link" href="contact.html"><i class="fas fa-envelope"></i> Contato</a></li>
-                    <li class="nav-item"><a class="nav-link active" href="index.html"><i class="fas fa-link"></i> Controle</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-home"></i> Dashboard</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-database"></i> Dados Salvos</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-envelope"></i> Contato</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="#"><i class="fas fa-link"></i> Controle</a></li>
                 </ul>
             </div>
         </div>
@@ -154,9 +208,9 @@
         </div>
 
         <div class="buttons">
-            <button class="btn btn-primary" onclick="importExcel()"><i class="fas fa-upload"></i> Importar</button>
-            <button class="btn btn-primary" onclick="exportToExcel()"><i class="fas fa-download"></i> Exportar</button>
-            <button class="btn btn-primary" onclick="saveData()"><i class="fas fa-save"></i> Salvar</button>
+            <button class="btn btn-primary" onclick="importExcel()"><i class="fas fa-upload"></i> Importar Excel</button>
+            <button class="btn btn-primary" onclick="exportToExcel()"><i class="fas fa-download"></i> Exportar Excel</button>
+            <button class="btn btn-primary" onclick="saveData()"><i class="fas fa-save"></i> Salvar Dados</button>
             <button class="btn btn-success" id="addRowButton"><i class="fas fa-plus-circle"></i> Nova Linha</button>
         </div>
 
@@ -177,8 +231,9 @@
                     </tr>
                 </thead>
                 <tbody>
+                    <!-- Linha inicial -->
                     <tr>
-                        <td><input type="text" class="conta form-control" value="" oninput="calculateTotal(this)"></td>
+                        <td><input type="text" class="conta form-control" oninput="calculateTotal(this)"></td>
                         <td><input type="text" class="horario form-control" readonly onclick="displayCurrentTime(this)"></td>
                         <td><input type="text" class="data form-control" readonly onclick="displayCurrentDate(this)"></td>
                         <td><input type="text" class="vencimento datepicker form-control" readonly onclick="displayCurrentDate(this)"></td>
@@ -186,11 +241,10 @@
                         <td>
                             <select class="prazo form-select" onchange="calculateTotal(this)">
                                 <option value="BB">BB</option>
-                                <option value="Bradesco">Bradesco</option>
+                                <option value="Bradesco" selected>Bradesco</option>
                                 <option value="PAN">PAN</option>
                                 <option value="CAIXA">Caixa</option>
                                 <option value="Inter">Inter</option>
-                                <option value="Bradesco" selected>Bradesco</option>
                             </select>
                         </td>
                         <td><input type="text" class="valor form-control" value="0.00" oninput="calculateTotal(this)"></td>
@@ -210,7 +264,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
-        // ====================== CALENDÁRIO (usando o do primeiro código) ======================
+        // ==================== CALENDÁRIO ====================
         $(function () {
             $(".datepicker").datepicker({
                 dateFormat: 'yy-mm-dd',
@@ -222,24 +276,27 @@
 
         function displayCurrentDate(cell) {
             if (!cell.value) {
-                var currentDate = new Date().toISOString().split('T')[0];
-                cell.value = currentDate;
+                cell.value = new Date().toISOString().split('T')[0];
             }
             calculateTotal(cell);
         }
 
         function displayCurrentTime(cell) {
             var now = new Date();
-            var time = now.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-            cell.value = time;
+            cell.value = now.toLocaleTimeString('pt-BR', { 
+                hour: '2-digit', 
+                minute: '2-digit', 
+                second: '2-digit' 
+            });
             calculateTotal(cell);
         }
 
+        // ==================== CÁLCULO ====================
         function calculateTotal(element) {
-            var row = element.parentElement.parentElement;
+            var row = element.closest('tr');
             var valor = parseFloat(row.querySelector('.valor').value.replace(',', '.')) || 0;
             var aumento = parseFloat(row.querySelector('.aumento').value) || 0;
-            
+
             var acrescimo = (valor * (aumento / 100)).toFixed(2);
             var valorTotal = (valor + parseFloat(acrescimo)).toFixed(2);
 
@@ -256,39 +313,48 @@
             var table = document.getElementById('dataTable');
             var totalPago = 0, totalNaoPago = 0;
 
-            for (var i = 1, row; row = table.rows[i]; i++) {
+            for (var i = 1; i < table.rows.length; i++) {
+                var row = table.rows[i];
                 var valorTotal = parseFloat(row.querySelector('.valorTotal').value.replace(',', '.')) || 0;
-                if (row.querySelector('.pago').checked) totalPago += valorTotal;
-                else totalNaoPago += valorTotal;
+                if (row.querySelector('.pago').checked) {
+                    totalPago += valorTotal;
+                } else {
+                    totalNaoPago += valorTotal;
+                }
             }
 
             document.getElementById('totalPago').value = totalPago.toFixed(2).replace('.', ',');
             document.getElementById('totalNaoPago').value = totalNaoPago.toFixed(2).replace('.', ',');
         }
 
-        // ====================== FUNÇÕES DE IMPORT/EXPORT/SALVAR ======================
+        // ==================== SALVAR / CARREGAR ====================
         function saveData() {
             var table = document.getElementById('dataTable');
             var data = [];
-            for (var i = 1, row; row = table.rows[i]; i++) {
-                var rowData = {};
-                rowData.conta = row.cells[0].querySelector('input').value;
-                rowData.horario = row.cells[1].querySelector('input').value;
-                rowData.data = row.cells[2].querySelector('input').value;
-                rowData.vencimento = row.cells[3].querySelector('input').value;
-                rowData.aumento = row.cells[4].querySelector('input').value;
-                rowData.prazo = row.cells[5].querySelector('select').value;
-                rowData.valor = row.cells[6].querySelector('input').value;
-                rowData.valorAcrescimo = row.cells[7].querySelector('input').value;
-                rowData.valorTotal = row.cells[8].querySelector('input').value;
-                rowData.pago = row.cells[9].querySelector('input').checked;
+
+            for (var i = 1; i < table.rows.length; i++) {
+                var row = table.rows[i];
+                var rowData = {
+                    conta: row.querySelector('.conta').value,
+                    horario: row.querySelector('.horario').value,
+                    data: row.querySelector('.data').value,
+                    vencimento: row.querySelector('.vencimento').value,
+                    aumento: row.querySelector('.aumento').value,
+                    prazo: row.querySelector('.prazo').value,
+                    valor: row.querySelector('.valor').value,
+                    valorAcrescimo: row.querySelector('.valorAcrescimo').value,
+                    valorTotal: row.querySelector('.valorTotal').value,
+                    pago: row.querySelector('.pago').checked
+                };
                 data.push(rowData);
             }
+
             localStorage.setItem('financeData', JSON.stringify(data));
             localStorage.setItem('valorSalarial', document.getElementById('valorSalarial').value);
-            alert('Dados salvos com sucesso!');
+            alert('✅ Dados salvos com sucesso!');
         }
 
+        // ==================== IMPORT / EXPORT EXCEL ====================
         function importExcel() {
             var input = document.createElement('input');
             input.type = 'file';
@@ -296,15 +362,15 @@
             input.onchange = function(e) {
                 var file = e.target.files[0];
                 if (!file) return;
+
                 var reader = new FileReader();
                 reader.onload = function(e) {
                     var data = new Uint8Array(e.target.result);
                     var workbook = XLSX.read(data, {type: 'array'});
-                    var firstSheetName = workbook.SheetNames[0];
-                    var firstSheet = workbook.Sheets[firstSheetName];
-                    var json = XLSX.utils.sheet_to_json(firstSheet, {header: 1});
-                    var dataRows = json.slice(1);
-                    populateTable(dataRows);
+                    var sheet = workbook.Sheets[workbook.SheetNames[0]];
+                    var json = XLSX.utils.sheet_to_json(sheet, {header: 1});
+                    
+                    populateTable(json.slice(1)); // remove cabeçalho
                 };
                 reader.readAsArrayBuffer(file);
             };
@@ -314,10 +380,7 @@
         function exportToExcel() {
             var table = document.getElementById('dataTable');
             var data = [];
-            var headers = [];
-            for (var j = 0; j < table.rows[0].cells.length; j++) {
-                headers.push(table.rows[0].cells[j].textContent.trim());
-            }
+            var headers = Array.from(table.rows[0].cells).map(cell => cell.textContent.trim());
             data.push(headers);
 
             for (var i = 1; i < table.rows.length; i++) {
@@ -329,7 +392,7 @@
                         if (el.type === 'checkbox') {
                             row.push(el.checked ? 'Sim' : 'Não');
                         } else {
-                            row.push(el.value);
+                            row.push(el.value || '');
                         }
                     } else {
                         row.push('');
@@ -337,21 +400,25 @@
                 }
                 data.push(row);
             }
+
             var wb = XLSX.utils.book_new();
             var ws = XLSX.utils.aoa_to_sheet(data);
-            XLSX.utils.book_append_sheet(wb, ws, 'Financeiro');
+            XLSX.utils.book_append_sheet(wb, ws, 'Controle_Financeiro');
             XLSX.writeFile(wb, 'controle_financeiro.xlsx');
         }
 
         function populateTable(jsonRows) {
             var table = document.getElementById('dataTable');
             var template = table.rows[1].cloneNode(true);
+
+            // Limpa todas as linhas exceto o cabeçalho
             while (table.rows.length > 1) {
                 table.deleteRow(1);
             }
 
             jsonRows.forEach(function (rowData) {
                 var newRow = template.cloneNode(true);
+                
                 newRow.querySelector('.conta').value = rowData[0] || '';
                 newRow.querySelector('.horario').value = rowData[1] || '';
                 newRow.querySelector('.data').value = rowData[2] || '';
@@ -361,21 +428,22 @@
                 newRow.querySelector('.valor').value = rowData[6] || '0.00';
                 newRow.querySelector('.valorAcrescimo').value = rowData[7] || '0.00';
                 newRow.querySelector('.valorTotal').value = rowData[8] || '0.00';
-                var paidValue = rowData[9];
-                newRow.querySelector('.pago').checked = (paidValue === true || paidValue === 'Sim' || paidValue === 'true' || paidValue === 1);
+                
+                var pagoEl = newRow.querySelector('.pago');
+                pagoEl.checked = (rowData[9] === true || rowData[9] === 'Sim' || rowData[9] === 'true' || rowData[9] === 1);
+
                 table.appendChild(newRow);
                 calculateTotal(newRow.querySelector('.valor'));
             });
 
-            if (table.rows.length === 1) {
-                addEmptyRow();
-            }
+            if (table.rows.length === 1) addEmptyRow();
             updateSummary();
         }
 
         function addEmptyRow() {
             var table = document.getElementById('dataTable');
             var newRow = table.rows[1].cloneNode(true);
+            
             newRow.querySelector('.conta').value = '';
             newRow.querySelector('.horario').value = '';
             newRow.querySelector('.data').value = '';
@@ -386,30 +454,32 @@
             newRow.querySelector('.valorAcrescimo').value = '0.00';
             newRow.querySelector('.valorTotal').value = '0.00';
             newRow.querySelector('.pago').checked = false;
+
             table.appendChild(newRow);
         }
 
-        // Carregar dados salvos ao abrir a página
+        // ==================== INICIALIZAÇÃO ====================
         document.addEventListener('DOMContentLoaded', function() {
+            // Carrega valor salarial
+            var savedValor = localStorage.getItem('valorSalarial');
+            if (savedValor) document.getElementById('valorSalarial').value = savedValor;
+
+            // Carrega dados da tabela
             var savedData = localStorage.getItem('financeData');
-            var savedValorSalarial = localStorage.getItem('valorSalarial');
-
-            if (savedValorSalarial) {
-                document.getElementById('valorSalarial').value = savedValorSalarial;
-            }
-
             if (savedData) {
-                savedData = JSON.parse(savedData);
-                var jsonRows = savedData.map(function(d) {
-                    return [d.conta, d.horario, d.data, d.vencimento, d.aumento, d.prazo, d.valor, d.valorAcrescimo, d.valorTotal, d.pago];
-                });
+                var data = JSON.parse(savedData);
+                var jsonRows = data.map(d => [
+                    d.conta, d.horario, d.data, d.vencimento, 
+                    d.aumento, d.prazo, d.valor, d.valorAcrescimo, 
+                    d.valorTotal, d.pago
+                ]);
                 populateTable(jsonRows);
             } else {
                 updateSummary();
             }
         });
 
-        // Botão adicionar linha
+        // Botão Nova Linha
         document.getElementById('addRowButton').addEventListener('click', addEmptyRow);
     </script>
 </body>
