@@ -140,7 +140,7 @@
 
         .conta { min-width: 140px; }
         .horario { min-width: 95px; }
-        .data, .vencimento { min-width: 110px; }
+        .data, .vencimento { min-width: 130px; }
         .aumento { min-width: 85px; }
         .prazo { min-width: 90px; }
         .valor, .valorAcrescimo, .valorTotal { 
@@ -226,7 +226,7 @@
         // ==================== FUNÇÕES DE DATA E HORA ====================
         function displayCurrentDate(cell) {
             if (!cell.value) {
-                cell.value = new Date().toISOString().split('T')[0];
+                cell.value = new Date().toISOString().split('T')[0]; // formato AAAA-MM-DD
             }
             calculateTotal(cell);
         }
@@ -286,7 +286,7 @@
                 <td><input type="text" class="conta form-control" oninput="calculateTotal(this)"></td>
                 <td><input type="text" class="horario form-control" readonly onclick="displayCurrentTime(this)"></td>
                 <td><input type="text" class="data form-control" readonly onclick="displayCurrentDate(this)"></td>
-                <td><input type="text" class="vencimento form-control" placeholder="AAAA-MM-DD" onclick="displayCurrentDate(this)"></td>
+                <td><input type="text" class="vencimento form-control" placeholder="Digite a data (ex: 06/04/2026)" oninput="calculateTotal(this)"></td>
                 <td><input type="number" step="0.01" class="aumento form-control" value="0" oninput="calculateTotal(this)" placeholder="0.00"></td>
                 <td>
                     <select class="prazo form-select" onchange="calculateTotal(this)">
@@ -389,7 +389,7 @@
                     <td><input type="text" class="conta form-control" value="${rowData[0] || ''}" oninput="calculateTotal(this)"></td>
                     <td><input type="text" class="horario form-control" value="${rowData[1] || ''}" readonly onclick="displayCurrentTime(this)"></td>
                     <td><input type="text" class="data form-control" value="${rowData[2] || ''}" readonly onclick="displayCurrentDate(this)"></td>
-                    <td><input type="text" class="vencimento form-control" value="${rowData[3] || ''}" placeholder="AAAA-MM-DD" onclick="displayCurrentDate(this)"></td>
+                    <td><input type="text" class="vencimento form-control" value="${rowData[3] || ''}" placeholder="Digite a data (ex: 06/04/2026)" oninput="calculateTotal(this)"></td>
                     <td><input type="number" step="0.01" class="aumento form-control" value="${rowData[4] || '0'}" oninput="calculateTotal(this)"></td>
                     <td>
                         <select class="prazo form-select" onchange="calculateTotal(this)">
