@@ -84,7 +84,7 @@
         tr:nth-child(even) { background-color: #f8f9fa; }
         tr:hover { background-color: #f0f8f7; }
 
-        /* === CALENDÁRIO MUITO MENOR E OTIMIZADO PARA CELULAR === */
+        /* Calendário menor e otimizado para celular */
         .ui-datepicker {
             font-size: 0.78rem !important;
             width: 200px !important;
@@ -104,7 +104,6 @@
             font-size: 0.85rem;
         }
 
-        /* Posicionamento melhor no mobile */
         .ui-datepicker {
             position: absolute !important;
             z-index: 1050 !important;
@@ -122,7 +121,6 @@
 </head>
 <body>
 
-    <!-- Navbar permanece igual -->
     <nav class="navbar navbar-expand-lg">
         <div class="container-fluid">
             <a class="navbar-brand" href="index2.html"><i class="fas fa-chart-line"></i> Controle Financeiro</a>
@@ -182,8 +180,8 @@
                     <tr>
                         <td><input type="text" class="conta form-control" value="" oninput="calculateTotal(this)"></td>
                         <td><input type="text" class="horario form-control" readonly onclick="displayCurrentTime(this)"></td>
-                        <td><input type="text" class="data form-control" readonly onclick="showDatePicker(this)"></td>
-                        <td><input type="text" class="vencimento form-control" readonly onclick="showDatePicker(this)"></td>
+                        <td><input type="text" class="data form-control" readonly onclick="displayCurrentDate(this)"></td>
+                        <td><input type="text" class="vencimento datepicker form-control" readonly onclick="displayCurrentDate(this)"></td>
                         <td><input type="number" step="0.01" class="aumento form-control" value="0" oninput="calculateTotal(this)" placeholder="0.00"></td>
                         <td>
                             <select class="prazo form-select" onchange="calculateTotal(this)">
@@ -212,44 +210,22 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
+        // ====================== CALENDÁRIO (usando o do primeiro código) ======================
         $(function () {
-            $.datepicker.regional['pt-BR'] = { /* mesmo de antes */ 
-                closeText: 'Fechar', prevText: '◀', nextText: '▶', currentText: 'Hoje',
-                monthNames: ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'],
-                monthNamesShort: ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'],
-                dayNamesMin: ['D','S','T','Q','Q','S','S'],
-                dateFormat: 'yy-mm-dd', firstDay: 0
-            };
-            $.datepicker.setDefaults($.datepicker.regional['pt-BR']);
-        });
-
-        // Calendário compacto + data automática do sistema
-        function showDatePicker(cell) {
-            // Preenche com data de hoje automaticamente
-            if (!cell.value) {
-                cell.value = new Date().toISOString().split('T')[0];
-            }
-
-            $(cell).datepicker({
+            $(".datepicker").datepicker({
                 dateFormat: 'yy-mm-dd',
                 changeMonth: true,
                 changeYear: true,
-                showButtonPanel: true,
-                beforeShow: function(input, inst) {
-                    // Força posicionamento abaixo do campo no mobile
-                    setTimeout(function() {
-                        inst.dpDiv.css({
-                            top: $(input).offset().top + $(input).outerHeight() + 5,
-                            left: $(input).offset().left
-                        });
-                    }, 10);
-                },
-                onSelect: function(dateText) {
-                    cell.value = dateText;
-                    calculateTotal(cell);
-                    $(this).datepicker("destroy");
-                }
-            }).datepicker("show");
+                showButtonPanel: true
+            });
+        });
+
+        function displayCurrentDate(cell) {
+            if (!cell.value) {
+                var currentDate = new Date().toISOString().split('T')[0];
+                cell.value = currentDate;
+            }
+            calculateTotal(cell);
         }
 
         function displayCurrentTime(cell) {
@@ -290,17 +266,151 @@
             document.getElementById('totalNaoPago').value = totalNaoPago.toFixed(2).replace('.', ',');
         }
 
-        // As funções saveData, importExcel, exportToExcel, populateTable e addEmptyRow permanecem iguais às da versão anterior
-        // (copie elas do código que eu te enviei antes se precisar)
+        // ====================== FUNÇÕES DE IMPORT/EXPORT/SALVAR ======================
+        function saveData() {
+            var table = document.getElementById('dataTable');
+            var data = [];
+            for (var i = 1, row; row = table.rows[i]; i++) {
+                var rowData = {};
+                rowData.conta = row.cells[0].querySelector('input').value;
+                rowData.horario = row.cells[1].querySelector('input').value;
+                rowData.data = row.cells[2].querySelector('input').value;
+                rowData.vencimento = row.cells[3].querySelector('input').value;
+                rowData.aumento = row.cells[4].querySelector('input').value;
+                rowData.prazo = row.cells[5].querySelector('select').value;
+                rowData.valor = row.cells[6].querySelector('input').value;
+                rowData.valorAcrescimo = row.cells[7].querySelector('input').value;
+                rowData.valorTotal = row.cells[8].querySelector('input').value;
+                rowData.pago = row.cells[9].querySelector('input').checked;
+                data.push(rowData);
+            }
+            localStorage.setItem('financeData', JSON.stringify(data));
+            localStorage.setItem('valorSalarial', document.getElementById('valorSalarial').value);
+            alert('Dados salvos com sucesso!');
+        }
 
-        document.getElementById('addRowButton').addEventListener('click', function () {
-            addEmptyRow();
-        });
+        function importExcel() {
+            var input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.xlsx,.xls';
+            input.onchange = function(e) {
+                var file = e.target.files[0];
+                if (!file) return;
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    var data = new Uint8Array(e.target.result);
+                    var workbook = XLSX.read(data, {type: 'array'});
+                    var firstSheetName = workbook.SheetNames[0];
+                    var firstSheet = workbook.Sheets[firstSheetName];
+                    var json = XLSX.utils.sheet_to_json(firstSheet, {header: 1});
+                    var dataRows = json.slice(1);
+                    populateTable(dataRows);
+                };
+                reader.readAsArrayBuffer(file);
+            };
+            input.click();
+        }
 
-        // DOMContentLoaded (mesmo de antes)
+        function exportToExcel() {
+            var table = document.getElementById('dataTable');
+            var data = [];
+            var headers = [];
+            for (var j = 0; j < table.rows[0].cells.length; j++) {
+                headers.push(table.rows[0].cells[j].textContent.trim());
+            }
+            data.push(headers);
+
+            for (var i = 1; i < table.rows.length; i++) {
+                var row = [];
+                var cells = table.rows[i].cells;
+                for (var j = 0; j < cells.length; j++) {
+                    var el = cells[j].querySelector('input, select');
+                    if (el) {
+                        if (el.type === 'checkbox') {
+                            row.push(el.checked ? 'Sim' : 'Não');
+                        } else {
+                            row.push(el.value);
+                        }
+                    } else {
+                        row.push('');
+                    }
+                }
+                data.push(row);
+            }
+            var wb = XLSX.utils.book_new();
+            var ws = XLSX.utils.aoa_to_sheet(data);
+            XLSX.utils.book_append_sheet(wb, ws, 'Financeiro');
+            XLSX.writeFile(wb, 'controle_financeiro.xlsx');
+        }
+
+        function populateTable(jsonRows) {
+            var table = document.getElementById('dataTable');
+            var template = table.rows[1].cloneNode(true);
+            while (table.rows.length > 1) {
+                table.deleteRow(1);
+            }
+
+            jsonRows.forEach(function (rowData) {
+                var newRow = template.cloneNode(true);
+                newRow.querySelector('.conta').value = rowData[0] || '';
+                newRow.querySelector('.horario').value = rowData[1] || '';
+                newRow.querySelector('.data').value = rowData[2] || '';
+                newRow.querySelector('.vencimento').value = rowData[3] || '';
+                newRow.querySelector('.aumento').value = rowData[4] || '0';
+                newRow.querySelector('.prazo').value = rowData[5] || 'Bradesco';
+                newRow.querySelector('.valor').value = rowData[6] || '0.00';
+                newRow.querySelector('.valorAcrescimo').value = rowData[7] || '0.00';
+                newRow.querySelector('.valorTotal').value = rowData[8] || '0.00';
+                var paidValue = rowData[9];
+                newRow.querySelector('.pago').checked = (paidValue === true || paidValue === 'Sim' || paidValue === 'true' || paidValue === 1);
+                table.appendChild(newRow);
+                calculateTotal(newRow.querySelector('.valor'));
+            });
+
+            if (table.rows.length === 1) {
+                addEmptyRow();
+            }
+            updateSummary();
+        }
+
+        function addEmptyRow() {
+            var table = document.getElementById('dataTable');
+            var newRow = table.rows[1].cloneNode(true);
+            newRow.querySelector('.conta').value = '';
+            newRow.querySelector('.horario').value = '';
+            newRow.querySelector('.data').value = '';
+            newRow.querySelector('.vencimento').value = '';
+            newRow.querySelector('.aumento').value = '0';
+            newRow.querySelector('.prazo').value = 'Bradesco';
+            newRow.querySelector('.valor').value = '0.00';
+            newRow.querySelector('.valorAcrescimo').value = '0.00';
+            newRow.querySelector('.valorTotal').value = '0.00';
+            newRow.querySelector('.pago').checked = false;
+            table.appendChild(newRow);
+        }
+
+        // Carregar dados salvos ao abrir a página
         document.addEventListener('DOMContentLoaded', function() {
-            // ... seu código de carregar dados do localStorage ...
+            var savedData = localStorage.getItem('financeData');
+            var savedValorSalarial = localStorage.getItem('valorSalarial');
+
+            if (savedValorSalarial) {
+                document.getElementById('valorSalarial').value = savedValorSalarial;
+            }
+
+            if (savedData) {
+                savedData = JSON.parse(savedData);
+                var jsonRows = savedData.map(function(d) {
+                    return [d.conta, d.horario, d.data, d.vencimento, d.aumento, d.prazo, d.valor, d.valorAcrescimo, d.valorTotal, d.pago];
+                });
+                populateTable(jsonRows);
+            } else {
+                updateSummary();
+            }
         });
+
+        // Botão adicionar linha
+        document.getElementById('addRowButton').addEventListener('click', addEmptyRow);
     </script>
 </body>
 </html>
