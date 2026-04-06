@@ -51,15 +51,11 @@
             border-radius: 16px;
         }
 
-        h2 { 
-            text-align: center; 
-            color: var(--primary-dark); 
-            margin-bottom: 20px; 
-        }
+        h2 { text-align: center; color: var(--primary-dark); margin-bottom: 20px; }
 
         .summary {
             display: flex;
-            gap: 15px;
+            gap: 12px;
             margin-bottom: 25px;
             justify-content: center;
             flex-wrap: wrap;
@@ -70,20 +66,19 @@
             flex-direction: column;
             font-weight: 600;
             color: #444;
-            min-width: 170px;
+            min-width: 160px;
         }
 
         .summary input {
             padding: 10px 12px;
-            font-size: 1.1rem;
+            font-size: 1rem;
             border-radius: 8px;
             border: 2px solid #ddd;
-            font-weight: 600;
         }
 
-        /* Cores dos totais no resumo */
-        #totalPago { color: #0d47a1 !important; font-weight: 700; }   /* azul escuro */
-        #totalNaoPago { color: #c62828 !important; font-weight: 700; } /* vermelho forte */
+        /* Estilo especial para totais */
+        #totalPago { color: #0d47a1; font-weight: 700; }     /* azul escuro */
+        #totalNaoPago { color: #c62828; font-weight: 700; }  /* vermelho */
 
         .buttons {
             text-align: center;
@@ -105,7 +100,6 @@
             overflow-x: auto;
             border-radius: 12px;
             box-shadow: 0 5px 15px rgba(0,0,0,0.08);
-            -webkit-overflow-scrolling: touch;
         }
 
         table {
@@ -124,7 +118,6 @@
             top: 0;
             z-index: 10;
             font-size: 0.9rem;
-            white-space: nowrap;
         }
 
         td {
@@ -137,15 +130,14 @@
         td select.form-select {
             font-size: 0.87rem;
             padding: 6px 8px;
-            height: auto;
-            border: 2px solid var(--gold) !important;
+            border: 2px solid var(--gold);
             border-radius: 6px;
-            transition: all 0.2s;
+            background-color: #fffaf0;
         }
 
         td input.form-control:focus,
         td select.form-select:focus {
-            border-color: #ffd700 !important;
+            border-color: #b8860b;
             box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.3);
             outline: none;
         }
@@ -174,22 +166,14 @@
 
         .ui-datepicker .ui-datepicker-header { padding: 4px 0 !important; }
         .ui-datepicker .ui-datepicker-title { font-size: 0.75rem !important; }
-
-        .ui-datepicker th {
-            padding: 3px 2px !important;
-            font-size: 0.65rem !important;
-            font-weight: 600;
-        }
-
+        .ui-datepicker th { padding: 3px 2px !important; font-size: 0.65rem !important; }
+        .ui-datepicker td { padding: 2px !important; }
         .ui-datepicker td span,
         .ui-datepicker td a {
             font-size: 12px !important;
             width: 18px !important;
             height: 18px !important;
             line-height: 18px !important;
-            padding: 0 !important;
-            margin: 1px auto !important;
-            border-radius: 4px;
         }
 
         footer {
@@ -199,11 +183,6 @@
             color: rgba(255,255,255,0.9);
             background: rgba(0, 0, 0, 0.3);
             font-size: 0.9rem;
-        }
-
-        .valorTotal {
-            font-weight: 700;
-            font-size: 1.05rem;
         }
     </style>
 </head>
@@ -217,9 +196,9 @@
             </button>
             <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
                 <ul class="navbar-nav">
-                    <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-home"></i> Dashboard</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-database"></i> Dados Salvos</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-envelope"></i> Contato</a></li>
+                    <li class="nav-item"><a class="nav-link" href="index2.html"><i class="fas fa-home"></i> Dashboard</a></li>
+                    <li class="nav-item"><a class="nav-link" href="dados_salvos.html"><i class="fas fa-database"></i> Dados Salvos</a></li>
+                    <li class="nav-item"><a class="nav-link" href="contact.html"><i class="fas fa-envelope"></i> Contato</a></li>
                     <li class="nav-item"><a class="nav-link active" href="#"><i class="fas fa-link"></i> Controle</a></li>
                 </ul>
             </div>
@@ -264,28 +243,8 @@
                         <th>Pago</th>
                     </tr>
                 </thead>
-                <tbody>
-                    <!-- Linha inicial -->
-                    <tr>
-                        <td><input type="text" class="conta form-control" oninput="calculateTotal(this)"></td>
-                        <td><input type="text" class="horario form-control" readonly onclick="displayCurrentTime(this)"></td>
-                        <td><input type="text" class="data form-control" readonly onclick="displayCurrentDate(this)"></td>
-                        <td><input type="text" class="vencimento datepicker form-control" onclick="displayCurrentDate(this)"></td>
-                        <td><input type="number" step="0.01" class="aumento form-control" value="0" oninput="calculateTotal(this)" placeholder="0.00"></td>
-                        <td>
-                            <select class="prazo form-select" onchange="calculateTotal(this)">
-                                <option value="BB">BB</option>
-                                <option value="Bradesco" selected>Bradesco</option>
-                                <option value="PAN">PAN</option>
-                                <option value="CAIXA">Caixa</option>
-                                <option value="Inter">Inter</option>
-                            </select>
-                        </td>
-                        <td><input type="text" class="valor form-control" value="0.00" oninput="calculateTotal(this)"></td>
-                        <td><input type="text" class="valorAcrescimo form-control" value="0.00" readonly></td>
-                        <td><input type="text" class="valorTotal form-control" value="0.00" readonly></td>
-                        <td><input type="checkbox" class="pago" onclick="calculateTotal(this)"></td>
-                    </tr>
+                <tbody id="tableBody">
+                    <!-- Linhas serão adicionadas via JavaScript -->
                 </tbody>
             </table>
         </div>
@@ -300,32 +259,33 @@
     <script>
         // ==================== CALENDÁRIO ====================
         $(function () {
-            $(".datepicker").datepicker({
+            // O datepicker será aplicado dinamicamente nas novas linhas
+        });
+
+        function applyDatepicker(row) {
+            $(row).find('.vencimento').datepicker({
                 dateFormat: 'yy-mm-dd',
                 changeMonth: true,
                 changeYear: true,
-                showButtonPanel: true,
-                showAnim: "fadeIn"
+                showButtonPanel: true
             });
-        });
+        }
 
+        // ==================== FUNÇÕES DE DATA E HORA ====================
         function displayCurrentDate(cell) {
-            // Permite digitar manualmente + abre calendário ao clicar
             if (!cell.value) {
                 cell.value = new Date().toISOString().split('T')[0];
             }
-            // Abre o calendário
-            $(cell).datepicker("show");
             calculateTotal(cell);
         }
 
         function displayCurrentTime(cell) {
-            var now = new Date();
-            cell.value = now.toLocaleTimeString('pt-BR', { 
-                hour: '2-digit', 
-                minute: '2-digit', 
-                second: '2-digit' 
-            });
+            if (!cell.value) {
+                var now = new Date();
+                cell.value = now.toLocaleTimeString('pt-BR', { 
+                    hour: '2-digit', minute: '2-digit', second: '2-digit' 
+                });
+            }
             calculateTotal(cell);
         }
 
@@ -365,7 +325,38 @@
             document.getElementById('totalNaoPago').value = totalNaoPago.toFixed(2).replace('.', ',');
         }
 
-        // ==================== SALVAR ====================
+        // ==================== NOVA LINHA ====================
+        function addEmptyRow() {
+            var tbody = document.getElementById('tableBody');
+            var newRow = document.createElement('tr');
+
+            newRow.innerHTML = `
+                <td><input type="text" class="conta form-control" oninput="calculateTotal(this)"></td>
+                <td><input type="text" class="horario form-control" readonly onclick="displayCurrentTime(this)"></td>
+                <td><input type="text" class="data form-control" readonly onclick="displayCurrentDate(this)"></td>
+                <td><input type="text" class="vencimento datepicker form-control" onclick="displayCurrentDate(this)"></td>
+                <td><input type="number" step="0.01" class="aumento form-control" value="0" oninput="calculateTotal(this)" placeholder="0.00"></td>
+                <td>
+                    <select class="prazo form-select" onchange="calculateTotal(this)">
+                        <option value="BB">BB</option>
+                        <option value="Bradesco" selected>Bradesco</option>
+                        <option value="PAN">PAN</option>
+                        <option value="CAIXA">Caixa</option>
+                        <option value="Inter">Inter</option>
+                    </select>
+                </td>
+                <td><input type="text" class="valor form-control" value="0.00" oninput="calculateTotal(this)"></td>
+                <td><input type="text" class="valorAcrescimo form-control" value="0.00" readonly></td>
+                <td><input type="text" class="valorTotal form-control" value="0.00" readonly></td>
+                <td><input type="checkbox" class="pago" onclick="calculateTotal(this)"></td>
+            `;
+
+            tbody.appendChild(newRow);
+            applyDatepicker(newRow);   // aplica calendário na nova linha
+            calculateTotal(newRow.querySelector('.valor'));
+        }
+
+        // ==================== SALVAR, IMPORT, EXPORT ====================
         function saveData() {
             var table = document.getElementById('dataTable');
             var data = [];
@@ -392,8 +383,8 @@
             alert('✅ Dados salvos com sucesso!');
         }
 
-        // ==================== IMPORT / EXPORT ====================
-        function importExcel() {
+        function importExcel() { /* mesma função anterior */ 
+            // (código mantido igual - não alterado)
             var input = document.createElement('input');
             input.type = 'file';
             input.accept = '.xlsx,.xls';
@@ -413,7 +404,8 @@
             input.click();
         }
 
-        function exportToExcel() {
+        function exportToExcel() { /* mesma função anterior */ 
+            // (código mantido igual)
             var table = document.getElementById('dataTable');
             var data = [];
             var headers = Array.from(table.rows[0].cells).map(cell => cell.textContent.trim());
@@ -425,14 +417,9 @@
                 for (var j = 0; j < cells.length; j++) {
                     var el = cells[j].querySelector('input, select');
                     if (el) {
-                        if (el.type === 'checkbox') {
-                            row.push(el.checked ? 'Sim' : 'Não');
-                        } else {
-                            row.push(el.value || '');
-                        }
-                    } else {
-                        row.push('');
-                    }
+                        if (el.type === 'checkbox') row.push(el.checked ? 'Sim' : 'Não');
+                        else row.push(el.value || '');
+                    } else row.push('');
                 }
                 data.push(row);
             }
@@ -444,51 +431,36 @@
         }
 
         function populateTable(jsonRows) {
-            var table = document.getElementById('dataTable');
-            var template = table.rows[1].cloneNode(true);
-
-            while (table.rows.length > 1) table.deleteRow(1);
+            var tbody = document.getElementById('tableBody');
+            tbody.innerHTML = '';
 
             jsonRows.forEach(function (rowData) {
-                var newRow = template.cloneNode(true);
-                
-                newRow.querySelector('.conta').value = rowData[0] || '';
-                newRow.querySelector('.horario').value = rowData[1] || '';
-                newRow.querySelector('.data').value = rowData[2] || '';
-                newRow.querySelector('.vencimento').value = rowData[3] || '';
-                newRow.querySelector('.aumento').value = rowData[4] || '0';
-                newRow.querySelector('.prazo').value = rowData[5] || 'Bradesco';
-                newRow.querySelector('.valor').value = rowData[6] || '0.00';
-                newRow.querySelector('.valorAcrescimo').value = rowData[7] || '0.00';
-                newRow.querySelector('.valorTotal').value = rowData[8] || '0.00';
-                
-                var pagoEl = newRow.querySelector('.pago');
-                pagoEl.checked = (rowData[9] === true || rowData[9] === 'Sim' || rowData[9] === 'true' || rowData[9] === 1);
-
-                table.appendChild(newRow);
+                var newRow = document.createElement('tr');
+                newRow.innerHTML = `
+                    <td><input type="text" class="conta form-control" value="${rowData[0] || ''}" oninput="calculateTotal(this)"></td>
+                    <td><input type="text" class="horario form-control" value="${rowData[1] || ''}" readonly onclick="displayCurrentTime(this)"></td>
+                    <td><input type="text" class="data form-control" value="${rowData[2] || ''}" readonly onclick="displayCurrentDate(this)"></td>
+                    <td><input type="text" class="vencimento datepicker form-control" value="${rowData[3] || ''}" onclick="displayCurrentDate(this)"></td>
+                    <td><input type="number" step="0.01" class="aumento form-control" value="${rowData[4] || '0'}" oninput="calculateTotal(this)"></td>
+                    <td><select class="prazo form-select" onchange="calculateTotal(this)">
+                        <option value="BB">BB</option>
+                        <option value="Bradesco" ${rowData[5] === 'Bradesco' ? 'selected' : ''}>Bradesco</option>
+                        <option value="PAN">PAN</option>
+                        <option value="CAIXA">Caixa</option>
+                        <option value="Inter">Inter</option>
+                    </select></td>
+                    <td><input type="text" class="valor form-control" value="${rowData[6] || '0.00'}" oninput="calculateTotal(this)"></td>
+                    <td><input type="text" class="valorAcrescimo form-control" value="${rowData[7] || '0.00'}" readonly></td>
+                    <td><input type="text" class="valorTotal form-control" value="${rowData[8] || '0.00'}" readonly></td>
+                    <td><input type="checkbox" class="pago" ${rowData[9] ? 'checked' : ''} onclick="calculateTotal(this)"></td>
+                `;
+                tbody.appendChild(newRow);
+                applyDatepicker(newRow);
                 calculateTotal(newRow.querySelector('.valor'));
             });
 
-            if (table.rows.length === 1) addEmptyRow();
+            if (tbody.children.length === 0) addEmptyRow();
             updateSummary();
-        }
-
-        function addEmptyRow() {
-            var table = document.getElementById('dataTable');
-            var newRow = table.rows[1].cloneNode(true);
-            
-            newRow.querySelector('.conta').value = '';
-            newRow.querySelector('.horario').value = '';
-            newRow.querySelector('.data').value = '';
-            newRow.querySelector('.vencimento').value = '';
-            newRow.querySelector('.aumento').value = '0';
-            newRow.querySelector('.prazo').value = 'Bradesco';
-            newRow.querySelector('.valor').value = '0.00';
-            newRow.querySelector('.valorAcrescimo').value = '0.00';
-            newRow.querySelector('.valorTotal').value = '0.00';
-            newRow.querySelector('.pago').checked = false;
-
-            table.appendChild(newRow);
         }
 
         // ==================== INICIALIZAÇÃO ====================
@@ -506,12 +478,11 @@
                 ]);
                 populateTable(jsonRows);
             } else {
-                updateSummary();
+                addEmptyRow();
             }
-        });
 
-        // Botão Nova Linha
-        document.getElementById('addRowButton').addEventListener('click', addEmptyRow);
+            document.getElementById('addRowButton').addEventListener('click', addEmptyRow);
+        });
     </script>
 </body>
 </html>
