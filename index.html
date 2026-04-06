@@ -50,11 +50,7 @@
             border-radius: 16px;
         }
 
-        h2 {
-            text-align: center;
-            color: var(--primary-dark);
-            margin-bottom: 20px;
-        }
+        h2 { text-align: center; color: var(--primary-dark); margin-bottom: 20px; }
 
         .summary {
             display: flex;
@@ -147,49 +143,49 @@
         tr:nth-child(even) { background-color: #f8f9fa; }
         tr:hover { background-color: #f0f8f7; }
 
-        /* ==================== CALENDÁRIO PERSONALIZADO ==================== */
+        /* ==================== CALENDÁRIO MUITO MENOR ==================== */
         .ui-datepicker {
-            font-size: 0.75rem !important;
-            width: 190px !important;
+            font-size: 0.68rem !important;   /* fonte geral menor */
+            width: 168px !important;         /* calendário mais estreito */
             box-shadow: 0 4px 15px rgba(0,0,0,0.25);
+            padding: 4px !important;
         }
 
-        /* Cabeçalho do calendário */
         .ui-datepicker .ui-datepicker-header {
-            padding: 4px 0;
+            padding: 4px 0 !important;
         }
 
         .ui-datepicker .ui-datepicker-title {
-            font-size: 0.85rem;
+            font-size: 0.75rem !important;
         }
 
-        /* Dias da semana */
+        /* Dias da semana (seg, ter, qua...) */
         .ui-datepicker th {
-            padding: 4px 2px !important;
-            font-size: 0.7rem;
+            padding: 3px 2px !important;
+            font-size: 0.65rem !important;
+            font-weight: 600;
         }
 
-        /* Células dos dias - NÚMEROS BEM PEQUENINHOS */
+        /* Células dos dias (números) */
         .ui-datepicker td {
             padding: 2px !important;
         }
 
-        .ui-datepicker td a,
-        .ui-datepicker td span {
-            font-size: 12px !important;     /* ← Tamanho do número do dia */
+        .ui-datepicker td span,
+        .ui-datepicker td a {
+            font-size: 12px !important;      /* ← tamanho que você pediu */
             width: 18px !important;
             height: 18px !important;
             line-height: 18px !important;
             padding: 0 !important;
             margin: 1px auto !important;
+            border-radius: 4px;
         }
 
         /* Hoje e dias selecionados */
-        .ui-datepicker td a.ui-state-highlight,
-        .ui-datepicker td a.ui-state-active {
-            background: #27ae60;
-            color: white;
-            border-radius: 50%;
+        .ui-datepicker td a.ui-state-active,
+        .ui-datepicker td a.ui-state-hover {
+            font-size: 12px !important;
         }
 
         footer {
@@ -209,6 +205,7 @@
 </head>
 <body>
 
+    <!-- Navbar permanece igual -->
     <nav class="navbar navbar-expand-lg">
         <div class="container-fluid">
             <a class="navbar-brand" href="#"><i class="fas fa-chart-line"></i> Controle Financeiro</a>
@@ -297,7 +294,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
-        // ==================== CALENDÁRIO ====================
+        // ==================== CALENDÁRIO PEQUENO ====================
         $(function () {
             $(".datepicker").datepicker({
                 dateFormat: 'yy-mm-dd',
@@ -361,7 +358,7 @@
             document.getElementById('totalNaoPago').value = totalNaoPago.toFixed(2).replace('.', ',');
         }
 
-        // ==================== SALVAR / CARREGAR ====================
+        // ==================== SALVAR / CARREGAR / IMPORT / EXPORT (mantido igual) ====================
         function saveData() {
             var table = document.getElementById('dataTable');
             var data = [];
@@ -388,7 +385,6 @@
             alert('✅ Dados salvos com sucesso!');
         }
 
-        // ==================== IMPORT / EXPORT ====================
         function importExcel() {
             var input = document.createElement('input');
             input.type = 'file';
@@ -396,7 +392,6 @@
             input.onchange = function(e) {
                 var file = e.target.files[0];
                 if (!file) return;
-
                 var reader = new FileReader();
                 reader.onload = function(e) {
                     var data = new Uint8Array(e.target.result);
@@ -488,7 +483,7 @@
             table.appendChild(newRow);
         }
 
-        // ==================== INICIALIZAÇÃO ====================
+        // Carregar dados salvos
         document.addEventListener('DOMContentLoaded', function() {
             var savedValor = localStorage.getItem('valorSalarial');
             if (savedValor) document.getElementById('valorSalarial').value = savedValor;
