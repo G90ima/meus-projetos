@@ -147,15 +147,49 @@
         tr:nth-child(even) { background-color: #f8f9fa; }
         tr:hover { background-color: #f0f8f7; }
 
-        /* Calendário otimizado para celular */
+        /* ==================== CALENDÁRIO PERSONALIZADO ==================== */
         .ui-datepicker {
-            font-size: 0.8rem !important;
-            width: 210px !important;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            font-size: 0.75rem !important;
+            width: 190px !important;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.25);
         }
 
-        .ui-datepicker th, .ui-datepicker td {
-            padding: 4px !important;
+        /* Cabeçalho do calendário */
+        .ui-datepicker .ui-datepicker-header {
+            padding: 4px 0;
+        }
+
+        .ui-datepicker .ui-datepicker-title {
+            font-size: 0.85rem;
+        }
+
+        /* Dias da semana */
+        .ui-datepicker th {
+            padding: 4px 2px !important;
+            font-size: 0.7rem;
+        }
+
+        /* Células dos dias - NÚMEROS BEM PEQUENINHOS */
+        .ui-datepicker td {
+            padding: 2px !important;
+        }
+
+        .ui-datepicker td a,
+        .ui-datepicker td span {
+            font-size: 12px !important;     /* ← Tamanho do número do dia */
+            width: 18px !important;
+            height: 18px !important;
+            line-height: 18px !important;
+            padding: 0 !important;
+            margin: 1px auto !important;
+        }
+
+        /* Hoje e dias selecionados */
+        .ui-datepicker td a.ui-state-highlight,
+        .ui-datepicker td a.ui-state-active {
+            background: #27ae60;
+            color: white;
+            border-radius: 50%;
         }
 
         footer {
@@ -231,7 +265,6 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <!-- Linha inicial -->
                     <tr>
                         <td><input type="text" class="conta form-control" oninput="calculateTotal(this)"></td>
                         <td><input type="text" class="horario form-control" readonly onclick="displayCurrentTime(this)"></td>
@@ -270,7 +303,8 @@
                 dateFormat: 'yy-mm-dd',
                 changeMonth: true,
                 changeYear: true,
-                showButtonPanel: true
+                showButtonPanel: true,
+                showAnim: "fadeIn"
             });
         });
 
@@ -354,7 +388,7 @@
             alert('✅ Dados salvos com sucesso!');
         }
 
-        // ==================== IMPORT / EXPORT EXCEL ====================
+        // ==================== IMPORT / EXPORT ====================
         function importExcel() {
             var input = document.createElement('input');
             input.type = 'file';
@@ -369,8 +403,7 @@
                     var workbook = XLSX.read(data, {type: 'array'});
                     var sheet = workbook.Sheets[workbook.SheetNames[0]];
                     var json = XLSX.utils.sheet_to_json(sheet, {header: 1});
-                    
-                    populateTable(json.slice(1)); // remove cabeçalho
+                    populateTable(json.slice(1));
                 };
                 reader.readAsArrayBuffer(file);
             };
@@ -411,10 +444,7 @@
             var table = document.getElementById('dataTable');
             var template = table.rows[1].cloneNode(true);
 
-            // Limpa todas as linhas exceto o cabeçalho
-            while (table.rows.length > 1) {
-                table.deleteRow(1);
-            }
+            while (table.rows.length > 1) table.deleteRow(1);
 
             jsonRows.forEach(function (rowData) {
                 var newRow = template.cloneNode(true);
@@ -460,11 +490,9 @@
 
         // ==================== INICIALIZAÇÃO ====================
         document.addEventListener('DOMContentLoaded', function() {
-            // Carrega valor salarial
             var savedValor = localStorage.getItem('valorSalarial');
             if (savedValor) document.getElementById('valorSalarial').value = savedValor;
 
-            // Carrega dados da tabela
             var savedData = localStorage.getItem('financeData');
             if (savedData) {
                 var data = JSON.parse(savedData);
@@ -479,7 +507,6 @@
             }
         });
 
-        // Botão Nova Linha
         document.getElementById('addRowButton').addEventListener('click', addEmptyRow);
     </script>
 </body>
