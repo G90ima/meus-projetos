@@ -76,9 +76,8 @@
             border: 2px solid #ddd;
         }
 
-        /* Estilo especial para totais */
-        #totalPago { color: #0d47a1; font-weight: 700; }     /* azul escuro */
-        #totalNaoPago { color: #c62828; font-weight: 700; }  /* vermelho */
+        #totalPago { color: #0d47a1; font-weight: 700; }
+        #totalNaoPago { color: #c62828; font-weight: 700; }
 
         .buttons {
             text-align: center;
@@ -125,7 +124,6 @@
             vertical-align: middle;
         }
 
-        /* Inputs com borda dourada */
         td input.form-control,
         td select.form-select {
             font-size: 0.87rem;
@@ -142,7 +140,6 @@
             outline: none;
         }
 
-        /* Larguras otimizadas */
         .conta { min-width: 140px; }
         .horario { min-width: 95px; }
         .data, .vencimento { min-width: 110px; }
@@ -174,15 +171,6 @@
             width: 18px !important;
             height: 18px !important;
             line-height: 18px !important;
-        }
-
-        footer {
-            margin-top: 30px;
-            padding: 18px;
-            text-align: center;
-            color: rgba(255,255,255,0.9);
-            background: rgba(0, 0, 0, 0.3);
-            font-size: 0.9rem;
         }
     </style>
 </head>
@@ -257,17 +245,32 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
-        // ==================== CALENDÁRIO ====================
-        $(function () {
-            // O datepicker será aplicado dinamicamente nas novas linhas
-        });
-
+        // ==================== CALENDÁRIO MODIFICADO ====================
         function applyDatepicker(row) {
             $(row).find('.vencimento').datepicker({
                 dateFormat: 'yy-mm-dd',
                 changeMonth: true,
                 changeYear: true,
-                showButtonPanel: true
+                showButtonPanel: true,
+                showAnim: 'fadeIn',
+                
+                // Abre sempre no mês atual
+                defaultDate: new Date(),
+                gotoCurrent: true,
+
+                // Tradução para Português
+                monthNames: ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'],
+                monthNamesShort: ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'],
+                dayNames: ['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'],
+                dayNamesShort: ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'],
+                dayNamesMin: ['D','S','T','Q','Q','S','S'],
+                firstDay: 0,
+
+                // Quando abrir, força o mês atual
+                beforeShow: function() {
+                    var today = new Date();
+                    $(this).datepicker('option', 'defaultDate', today);
+                }
             });
         }
 
@@ -352,7 +355,7 @@
             `;
 
             tbody.appendChild(newRow);
-            applyDatepicker(newRow);   // aplica calendário na nova linha
+            applyDatepicker(newRow);
             calculateTotal(newRow.querySelector('.valor'));
         }
 
@@ -383,8 +386,7 @@
             alert('✅ Dados salvos com sucesso!');
         }
 
-        function importExcel() { /* mesma função anterior */ 
-            // (código mantido igual - não alterado)
+        function importExcel() {
             var input = document.createElement('input');
             input.type = 'file';
             input.accept = '.xlsx,.xls';
@@ -404,8 +406,7 @@
             input.click();
         }
 
-        function exportToExcel() { /* mesma função anterior */ 
-            // (código mantido igual)
+        function exportToExcel() {
             var table = document.getElementById('dataTable');
             var data = [];
             var headers = Array.from(table.rows[0].cells).map(cell => cell.textContent.trim());
@@ -442,13 +443,15 @@
                     <td><input type="text" class="data form-control" value="${rowData[2] || ''}" readonly onclick="displayCurrentDate(this)"></td>
                     <td><input type="text" class="vencimento datepicker form-control" value="${rowData[3] || ''}" onclick="displayCurrentDate(this)"></td>
                     <td><input type="number" step="0.01" class="aumento form-control" value="${rowData[4] || '0'}" oninput="calculateTotal(this)"></td>
-                    <td><select class="prazo form-select" onchange="calculateTotal(this)">
-                        <option value="BB">BB</option>
-                        <option value="Bradesco" ${rowData[5] === 'Bradesco' ? 'selected' : ''}>Bradesco</option>
-                        <option value="PAN">PAN</option>
-                        <option value="CAIXA">Caixa</option>
-                        <option value="Inter">Inter</option>
-                    </select></td>
+                    <td>
+                        <select class="prazo form-select" onchange="calculateTotal(this)">
+                            <option value="BB">BB</option>
+                            <option value="Bradesco" ${rowData[5] === 'Bradesco' ? 'selected' : ''}>Bradesco</option>
+                            <option value="PAN">PAN</option>
+                            <option value="CAIXA">Caixa</option>
+                            <option value="Inter">Inter</option>
+                        </select>
+                    </td>
                     <td><input type="text" class="valor form-control" value="${rowData[6] || '0.00'}" oninput="calculateTotal(this)"></td>
                     <td><input type="text" class="valorAcrescimo form-control" value="${rowData[7] || '0.00'}" readonly></td>
                     <td><input type="text" class="valorTotal form-control" value="${rowData[8] || '0.00'}" readonly></td>
